@@ -1,0 +1,35 @@
+name = "uc-social-pipeline"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+account_id = "your-cloudflare-account-id"
+
+# Copy this file to wrangler.toml and fill in your own values.
+# Set secrets via: wrangler secret put <SECRET_NAME>
+[ai]
+binding = "AI"
+
+[vars]
+SUPABASE_URL = "https://your-project.supabase.co"
+
+# Secrets: DATABASE_URL, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
+# Platform API keys: TWITTER_BEARER_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET
+# Alert notifications: API_BASE_URL, INTERNAL_SECRET (must match the API worker's INTERNAL_SECRET)
+#
+# Sentiment provider (optional — defaults to 'cloudflare' if AI binding present, else 'ollama'):
+#   SENTIMENT_PROVIDER = "cloudflare"   # or "ollama" or "huggingface"
+#   OLLAMA_URL = "http://localhost:11434"          # base URL for Ollama (self-hosters)
+#   HUGGINGFACE_API_TOKEN = "hf_..."               # HuggingFace Inference API token (optional for public models)
+
+# [[queues.producers]]
+# queue = "mention-processing"
+# binding = "MENTION_QUEUE"
+
+# Cron triggers - poll each platform on its schedule
+[triggers]
+crons = [
+  "*/5 * * * *",   # Twitter/X - every 5 min
+  "*/10 * * * *",  # Reddit - every 10 min
+  "*/15 * * * *",  # HN + GitHub - every 15 min
+  "0 * * * *"      # LinkedIn + YouTube + G2 + Trustpilot + Product Hunt - hourly
+]

@@ -1,0 +1,90 @@
+OpenSourceCommunity Non-Commercial License
+Version 1.0, 2025
+
+Copyright (c) 2025 JonJLevesque and OpenSourceCommunity contributors
+https://github.com/JonJLevesque/OpenSourceCommunity
+
+---
+
+TERMS AND CONDITIONS FOR USE, COPYING, MODIFICATION, AND DISTRIBUTION
+
+1. GRANT OF RIGHTS
+
+   Subject to the conditions and restrictions in this License, the copyright
+   holders grant you a worldwide, royalty-free, non-exclusive license to:
+
+   a) Use this software for any personal or organizational purpose;
+   b) Copy and distribute verbatim copies of the software;
+   c) Modify the software and distribute your modifications;
+   d) Fork the repository and submit contributions back to the original project.
+
+2. CONDITIONS
+
+   Any use, copy, modification, or distribution of this software must:
+
+   a) Retain this copyright notice and license text in all copies or
+      substantial portions of the software;
+   b) Clearly state any modifications you have made to the original software;
+   c) Not misrepresent the origin of the software — you may not claim that
+      you wrote the original software.
+
+3. NON-COMMERCIAL RESTRICTION
+
+   This License explicitly prohibits commercial use. You may NOT:
+
+   a) Sell this software, in whole or in part, in its original or modified form;
+   b) Offer this software — or a product that is substantially derived from
+      this software — as a hosted, managed, or software-as-a-service (SaaS)
+      offering for which you charge a fee, subscription, or any other form
+      of payment;
+   c) Bundle or include this software in a commercial product or service that
+      generates revenue, directly or indirectly;
+   d) Use this software as the basis for a business, consulting engagement,
+      or any revenue-generating activity without explicit written permission
+      from the copyright holders;
+   e) License, sublicense, or otherwise transfer the right to use this software
+      to a third party in exchange for payment or other commercial consideration.
+
+   "Commercial use" means any use primarily intended for commercial advantage
+   or monetary compensation.
+
+4. CONTRIBUTIONS
+
+   By submitting a contribution to this project (including but not limited to
+   pull requests, patches, issues with attached code, or any other modification),
+   you agree that:
+
+   a) Your contribution is licensed to the project under this same License;
+   b) You have the right to submit the contribution under these terms;
+   c) The copyright holders may include your contribution in the software and
+      distribute it under this License.
+
+5. NO WARRANTY
+
+   THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL
+   THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE,
+   ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+   OTHER DEALINGS IN THE SOFTWARE.
+
+6. TERMINATION
+
+   Your rights under this License terminate automatically if you violate any
+   of its terms. Upon termination, you must cease all use, distribution, and
+   possession of copies of the software.
+
+7. COMMERCIAL LICENSING
+
+   If you wish to use this software for commercial purposes, please contact
+   the copyright holders to discuss a separate commercial license:
+
+   hello@opensourcecommunity.io
+
+---
+
+Summary (not a substitute for the full terms above):
+
+  YES — Personal use, self-hosting, forking, modifying, contributing
+  NO  — Selling, paid hosted services, commercial products, revenue generation

@@ -1,0 +1,63 @@
+# OpenSourceCommunity — Local Development Services
+#
+# Prerequisites:
+#   1. Install the Supabase CLI: https://supabase.com/docs/guides/cli
+#   2. Run: npx supabase start  (starts Postgres, Auth, Realtime, Studio)
+#   3. Then run: docker compose up -d  (starts supplementary services)
+#
+# For production self-hosting, see docs/self-hosting.md
+
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Redis — used by the social pipeline for mention deduplication.
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: uc-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Ollama — local LLM runtime for sentiment analysis.
+  # After starting: docker exec uc-ollama ollama pull llama3.2
+  # Set SENTIMENT_PROVIDER=ollama and OLLAMA_URL=http://localhost:11434
+  # ---------------------------------------------------------------------------
+  ollama:
+    image: ollama/ollama
+    container_name: uc-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  # ---------------------------------------------------------------------------
+  # Mailpit — local SMTP server + web UI for catching auth confirmation emails.
+  # Web UI: http://localhost:8025
+  # Configure Supabase to use SMTP host=localhost port=1025
+  # ---------------------------------------------------------------------------
+  mailpit:
+    image: axllent/mailpit
+    container_name: uc-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+
+volumes:
+  redis_data:
+  ollama_data:

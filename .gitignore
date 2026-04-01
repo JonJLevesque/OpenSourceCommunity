@@ -1,0 +1,72 @@
+# ─── Dependencies ──────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ─── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+build/
+.next/
+out/
+.turbo/
+.wrangler/
+
+# ─── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.dev.vars
+# Keep .env.example and .dev.vars.example — they're safe templates
+!.env.example
+!**/.env.example
+!**/.dev.vars.example
+
+# ─── Cloudflare / Wrangler ─────────────────────────────────────────────────────
+wrangler.toml
+# Keep the example
+!wrangler.toml.example
+
+# ─── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ─── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.suo
+*.user
+
+# ─── Testing ───────────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── TypeScript ────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Misc ──────────────────────────────────────────────────────────────────────
+.cache/
+tmp/
+temp/
+
+# ─── Docker ────────────────────────────────────────────────────────────────────
+# (docker-compose.yml is intentionally committed; .dockerignore is generated)
+.dockerignore
+
+# ─── Claude Code (may contain local paths / secrets) ───────────────────────────
+.claude/
+.vercel

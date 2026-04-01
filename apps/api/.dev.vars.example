@@ -1,0 +1,27 @@
+# PostgreSQL connection string
+DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres
+
+# Supabase (get from your Supabase project or `npx supabase start` output)
+SUPABASE_URL=http://localhost:54321
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_JWT_SECRET=your-jwt-secret
+
+# Redis (for social pipeline dedup — optional for API)
+UPSTASH_REDIS_REST_URL=http://localhost:6379
+UPSTASH_REDIS_REST_TOKEN=
+
+# CORS — comma-separated list of allowed origins
+CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+
+# App domain (for tenant subdomain extraction in production)
+# APP_DOMAIN=yourdomain.com
+
+# Email notifications via Resend (https://resend.com)
+RESEND_API_KEY=re_your_resend_api_key
+# EMAIL_PROVIDER=resend
+# EMAIL_FROM=Community <hello@yourdomain.com>
+# EMAIL_DOMAIN=yourdomain.com  # Mailgun only
+
+# Shared secret for /internal/* Worker-to-Worker routes
+# Must match INTERNAL_SECRET in apps/social-pipeline/.dev.vars
+INTERNAL_SECRET=change-me-to-any-random-string

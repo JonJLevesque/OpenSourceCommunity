@@ -1,0 +1,40 @@
+name = "osc-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+account_id = "your-cloudflare-account-id"
+
+# Set secrets via: wrangler secret put <SECRET_NAME>
+
+[[routes]]
+pattern = "api.yourdomain.com/*"
+zone_name = "yourdomain.com"
+
+[vars]
+NODE_ENV = "production"
+SUPABASE_URL = "https://your-project.supabase.co"
+CORS_ORIGINS = "https://yourdomain.com,https://www.yourdomain.com"
+DEFAULT_TENANT_SLUG = "community"
+
+# Secrets (stored in Cloudflare — set via `wrangler secret put` after first deploy):
+# DATABASE_URL
+# SUPABASE_SERVICE_ROLE_KEY
+# SUPABASE_JWT_SECRET
+# UPSTASH_REDIS_REST_URL
+# UPSTASH_REDIS_REST_TOKEN
+# RESEND_API_KEY
+# INTERNAL_SECRET   (shared with social-pipeline for /internal/* routes)
+
+[triggers]
+crons = ["0 8 * * *"]  # Daily digest at 08:00 UTC
+
+# Queues (add back after creating via Cloudflare dashboard):
+# [[queues.producers]]
+# queue = "social-pipeline-ingestion"
+# binding = "SOCIAL_QUEUE"
+#
+# [[queues.consumers]]
+# queue = "notifications-queue"
+# max_batch_size = 50
+# max_batch_timeout = 5
+#

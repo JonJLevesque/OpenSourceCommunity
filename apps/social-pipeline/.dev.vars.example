@@ -1,0 +1,30 @@
+# PostgreSQL connection string
+DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres
+
+# Supabase (needed for auth validation)
+SUPABASE_URL=http://localhost:54321
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_JWT_SECRET=your-jwt-secret
+
+# Redis for dedup (choose one approach)
+# Option A: Standard Redis (default when REDIS_URL is set)
+REDIS_URL=redis://localhost:6379
+# Option B: Upstash Redis (comment out REDIS_URL and use these instead)
+# UPSTASH_REDIS_REST_URL=https://your-instance.upstash.io
+# UPSTASH_REDIS_REST_TOKEN=your-token
+
+# Sentiment analysis provider: cloudflare | ollama | huggingface (default: ollama on Node.js)
+SENTIMENT_PROVIDER=ollama
+OLLAMA_URL=http://localhost:11434
+# HUGGINGFACE_API_TOKEN=your-token  # Optional, for HF inference API
+
+# Social platform API keys (all optional — connectors skip gracefully if missing)
+# TWITTER_BEARER_TOKEN=your-token
+# REDDIT_CLIENT_ID=your-client-id
+# REDDIT_CLIENT_SECRET=your-client-secret
+# GITHUB_TOKEN=your-token
+
+# Alert callback — URL of the API worker + shared secret
+# Must match INTERNAL_SECRET in apps/api/.dev.vars
+API_BASE_URL=http://localhost:8787
+INTERNAL_SECRET=change-me-to-any-random-string

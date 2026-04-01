@@ -1,0 +1,21 @@
+# Normalize line endings to LF on checkout everywhere
+* text=auto eol=lf
+
+# Force binary treatment for assets
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.svg  text eol=lf
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+
+# Lock files — treat as text, never merge
+pnpm-lock.yaml  merge=ours
+package-lock.json merge=ours
+
+# Mark generated migration files as non-diffable noise
+packages/db/migrations/*.sql linguist-generated=true

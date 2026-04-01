@@ -1,0 +1,14 @@
+{
+  "name": "@osc/core",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "@osc/config": "workspace:*",
+    "typescript": "^5.5.0"
+  }
+}
