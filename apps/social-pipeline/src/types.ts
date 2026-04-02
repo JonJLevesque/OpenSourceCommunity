@@ -7,6 +7,7 @@ export interface Env {
   AI?: Ai                         // Cloudflare Workers AI binding (optional for self-hosters)
   MENTION_QUEUE: Queue            // Cloudflare Queue for mention processing
   DATABASE_URL: string
+  HYPERDRIVE?: { connectionString: string }  // Cloudflare Hyperdrive binding
   // Redis — at least one of these groups must be set for deduplication
   REDIS_URL?: string              // Standard Redis (Node.js / ioredis)
   UPSTASH_REDIS_REST_URL?: string // Upstash REST Redis (Cloudflare Workers)

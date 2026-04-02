@@ -24,7 +24,7 @@ export async function evaluateAlerts(
   tenantId: string,
   platform: string
 ): Promise<void> {
-  const db = createClient(env.DATABASE_URL)
+  const db = createClient(env.HYPERDRIVE?.connectionString ?? env.DATABASE_URL)
 
   // Get alert config for this tenant
   const [config] = await db

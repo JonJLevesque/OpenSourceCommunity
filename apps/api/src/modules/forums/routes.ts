@@ -18,7 +18,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
 
   // GET /api/forums/categories — list all categories with thread stats
   forumsRouter.get('/categories', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const categories = await db.query.forumCategories.findMany({
@@ -77,7 +77,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
 
   // GET /api/forums/threads — list threads with pagination and author names
   forumsRouter.get('/threads', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { categoryId, sort = 'newest', page = '1', limit = '20' } = c.req.query()
 
@@ -116,7 +116,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
 
   // GET /api/forums/threads/:id — get single thread with posts, enriched with author info
   forumsRouter.get('/threads/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const threadId = c.req.param('id')
 
@@ -193,7 +193,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
   })
 
   forumsRouter.post('/threads', requireAuth('member'), zValidator('json', createThreadSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const { title, body, categoryId } = c.req.valid('json')
@@ -219,7 +219,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
   })
 
   forumsRouter.post('/threads/:id/posts', requireAuth('member'), zValidator('json', createPostSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const threadId = c.req.param('id')
@@ -268,7 +268,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
 
   // POST /api/forums/threads/:id/resolve — mark thread as resolved
   forumsRouter.post('/threads/:id/resolve', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const threadId = c.req.param('id')
@@ -295,7 +295,7 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
 
   // DELETE /api/forums/posts/:id — soft delete a post
   forumsRouter.delete('/posts/:id', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const postId = c.req.param('id')

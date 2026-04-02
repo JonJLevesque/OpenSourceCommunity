@@ -13,6 +13,7 @@ interface TenantConfig {
   logoUrl?: string | null
   primaryColor?: string | null
   enabledModules: ModuleKey[]
+  settings?: Record<string, unknown>
 }
 
 interface MemberProfile {

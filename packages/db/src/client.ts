@@ -8,8 +8,9 @@ export function createClient(connectionString: string) {
   return drizzle(sql, { schema })
 }
 
-// Per-request client for Cloudflare Workers.
-// Workers isolate I/O contexts per-request so we must not cache across requests.
-export function getClient(connectionString: string) {
-  return createClient(connectionString)
+// Cloudflare Workers client.
+// Prefers Hyperdrive binding (required for TCP connections from Workers).
+// Falls back to direct connection string for local dev.
+export function getClient(connectionString: string, hyperdrive?: { connectionString: string }) {
+  return createClient(hyperdrive?.connectionString ?? connectionString)
 }

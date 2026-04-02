@@ -29,7 +29,7 @@ export const tenantMiddleware: MiddlewareHandler<HonoEnv> = async (c, next) => {
   }
 
   // Fetch from database
-  const db = getClient(c.env.DATABASE_URL)
+  const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
 
   let resolvedTenant = await db.query.tenants.findFirst({
     where: eq(tenants.slug, slug),

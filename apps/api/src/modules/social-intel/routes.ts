@@ -36,7 +36,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/intelligence/mentions ─────────────────────────────────────────
   router.get('/mentions', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const { page = '1', limit = '20', platform, sentiment, status = 'new', author } = c.req.query()
@@ -94,7 +94,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/intelligence/mentions/:id ────────────────────────────────────
   router.patch('/mentions/:id', requireAuth('moderator'), zValidator('json', updateMentionStatusSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const mentionId = c.req.param('id')
     const { status } = c.req.valid('json')
@@ -116,7 +116,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/intelligence/sentiment ─────────────────────────────────────────
   router.get('/sentiment', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const { days = '30' } = c.req.query()
@@ -247,7 +247,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/intelligence/alerts ────────────────────────────────────────────
   router.get('/alerts', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { status = 'open' } = c.req.query()
 
@@ -262,7 +262,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/intelligence/alerts/:id/resolve ───────────────────────────────
   router.patch('/alerts/:id/resolve', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const alertId = c.req.param('id')
@@ -285,7 +285,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/intelligence/keyword-groups ─────────────────────────────────────
   router.get('/keyword-groups', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const rows = await db
@@ -299,7 +299,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── POST /api/intelligence/keyword-groups ────────────────────────────────────
   router.post('/keyword-groups', requireAuth('org_admin'), zValidator('json', createKeywordGroupSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { name, type, terms, platforms } = c.req.valid('json')
 
@@ -313,7 +313,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/intelligence/keyword-groups/:id ───────────────────────────────
   router.patch('/keyword-groups/:id', requireAuth('org_admin'), zValidator('json', updateKeywordGroupSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const groupId = c.req.param('id')
     const body = c.req.valid('json')
@@ -341,7 +341,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── DELETE /api/intelligence/keyword-groups/:id ──────────────────────────────
   router.delete('/keyword-groups/:id', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const groupId = c.req.param('id')
 
@@ -359,7 +359,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── POST /api/intelligence/link-mentions ────────────────────────────────────
   router.post('/link-mentions', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     // 1. Fetch all members with non-empty socialHandles
@@ -407,7 +407,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/intelligence/alert-config ──────────────────────────────────────
   router.get('/alert-config', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const [row] = await db
@@ -426,7 +426,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/intelligence/alert-config ─────────────────────────────────────
   router.patch('/alert-config', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const body = await c.req.json() as {
       notificationChannels?: { email?: boolean; slack?: boolean; inApp?: boolean }

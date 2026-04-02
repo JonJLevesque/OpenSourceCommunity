@@ -18,7 +18,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   // GET /api/events — list upcoming published events
   // ---------------------------------------------------------------------------
   eventsRouter.get('/', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { view = 'list', page = '1', limit = '20' } = c.req.query()
 
@@ -51,7 +51,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   // GET /api/events/:id — single event with RSVPs and recordings
   // ---------------------------------------------------------------------------
   eventsRouter.get('/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const eventId = c.req.param('id')
 
@@ -102,7 +102,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   })
 
   eventsRouter.post('/', requireAuth('moderator'), zValidator('json', createEventSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const data = c.req.valid('json')
@@ -150,7 +150,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   })
 
   eventsRouter.patch('/:id', requireAuth('moderator'), zValidator('json', updateEventSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const eventId = c.req.param('id')
     const data = c.req.valid('json')
@@ -195,7 +195,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   })
 
   eventsRouter.post('/:id/rsvp', requireAuth('member'), zValidator('json', rsvpSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const eventId = c.req.param('id')
@@ -225,7 +225,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   // DELETE /api/events/:id/rsvp — cancel RSVP
   // ---------------------------------------------------------------------------
   eventsRouter.delete('/:id/rsvp', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const eventId = c.req.param('id')
@@ -252,7 +252,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   })
 
   eventsRouter.post('/:id/recordings', requireAuth('org_admin'), zValidator('json', addRecordingSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const eventId = c.req.param('id')
     const data = c.req.valid('json')
@@ -279,7 +279,7 @@ export function registerEventsRoutes(app: Hono<HonoEnv>) {
   // GET /api/events/:id/recordings — list recordings
   // ---------------------------------------------------------------------------
   eventsRouter.get('/:id/recordings', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const eventId = c.req.param('id')
 

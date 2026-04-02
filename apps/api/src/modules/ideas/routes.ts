@@ -46,7 +46,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/ideas/categories ───────────────────────────────────────────────
   ideasRouter.get('/categories', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const cats = await db
@@ -65,7 +65,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/ideas ──────────────────────────────────────────────────────────
   // List ideas with sort + filter options
   ideasRouter.get('/', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
 
@@ -164,7 +164,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/ideas/:id ──────────────────────────────────────────────────────
   ideasRouter.get('/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const ideaId = c.req.param('id')
@@ -237,7 +237,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
 
   // ─── POST /api/ideas ─────────────────────────────────────────────────────────
   ideasRouter.post('/', requireAuth('member'), zValidator('json', createIdeaSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const { title, body, category } = c.req.valid('json')
@@ -272,7 +272,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
   // ─── POST /api/ideas/:id/vote ─────────────────────────────────────────────────
   // Idempotent toggle — vote if not voted, unvote if already voted
   ideasRouter.post('/:id/vote', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const ideaId = c.req.param('id')
@@ -327,7 +327,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
 
   // ─── POST /api/ideas/:id/comments ────────────────────────────────────────────
   ideasRouter.post('/:id/comments', requireAuth('member'), zValidator('json', createCommentSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const ideaId = c.req.param('id')
@@ -352,7 +352,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
   // ─── PATCH /api/ideas/:id/status ──────────────────────────────────────────────
   // org_admin only — change idea status and record history
   ideasRouter.patch('/:id/status', requireAuth('org_admin'), zValidator('json', changeStatusSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const ideaId = c.req.param('id')
@@ -406,7 +406,7 @@ export function registerIdeasRoutes(app: Hono<HonoEnv>) {
   // ─── POST /api/ideas/:id/merge ────────────────────────────────────────────────
   // org_admin only — merge this idea into another
   ideasRouter.post('/:id/merge', requireAuth('org_admin'), zValidator('json', mergeIdeaSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const ideaId = c.req.param('id')
     const { targetIdeaId } = c.req.valid('json')

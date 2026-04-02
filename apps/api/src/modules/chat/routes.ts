@@ -27,7 +27,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // GET /api/chat/channels
   router.get('/channels', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const channels = await db
@@ -41,7 +41,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // POST /api/chat/channels
   router.post('/channels', requireAuth('moderator'), zValidator('json', createChannelSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const { name, slug, description, isPrivate } = c.req.valid('json')
@@ -56,7 +56,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // GET /api/chat/channels/:id
   router.get('/channels/:id', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const channelId = c.req.param('id')
 
@@ -70,7 +70,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // GET /api/chat/channels/:id/messages
   router.get('/channels/:id/messages', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const channelId = c.req.param('id')
     const { limit = '50' } = c.req.query()
@@ -106,7 +106,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // POST /api/chat/channels/:id/messages
   router.post('/channels/:id/messages', requireAuth(), zValidator('json', sendMessageSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const channelId = c.req.param('id')
@@ -127,7 +127,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // PATCH /api/chat/channels/:id/messages/:msgId — edit own message
   router.patch('/channels/:id/messages/:msgId', requireAuth(), zValidator('json', editMessageSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const channelId = c.req.param('id')
@@ -151,7 +151,7 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
 
   // DELETE /api/chat/channels/:id/messages/:msgId — delete own message (moderators can delete any)
   router.delete('/channels/:id/messages/:msgId', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const channelId = c.req.param('id')

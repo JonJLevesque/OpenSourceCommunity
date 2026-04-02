@@ -133,7 +133,7 @@ export async function sendEmailNotification(
   eventType: string,
   payload: Record<string, unknown>,
 ): Promise<void> {
-  const db = getClient(c.env.DATABASE_URL)
+  const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
   const emailEnv: Parameters<typeof createEmailProvider>[0] = {}
   if (c.env.EMAIL_PROVIDER !== undefined) emailEnv.EMAIL_PROVIDER = c.env.EMAIL_PROVIDER
   if (c.env.EMAIL_API_KEY !== undefined) emailEnv.EMAIL_API_KEY = c.env.EMAIL_API_KEY

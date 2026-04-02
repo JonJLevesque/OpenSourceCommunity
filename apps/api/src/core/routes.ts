@@ -67,6 +67,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
         logoUrl: tenant.logoUrl ?? undefined,
         primaryColor: tenant.primaryColor ?? undefined,
         enabledModules,
+        settings: (tenant.settings ?? {}) as Record<string, unknown>,
       },
     })
   })
@@ -74,7 +75,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/members ─────────────────────────────────────────────────────────
   // Member directory — searchable, filterable by role, paginated
   app.get('/api/members', requireAuth(), zValidator('query', membersQuerySchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { search, role, page, limit } = c.req.valid('query')
 
@@ -117,7 +118,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/members/:id ─────────────────────────────────────────────────────
   // Public-ish member profile — no auth required but scoped to tenant
   app.get('/api/members/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const memberId = c.req.param('id')
 
@@ -142,7 +143,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/admin/overview ──────────────────────────────────────────────────
   // Admin dashboard overview: member count, module states, pending moderation
   app.get('/api/admin/overview', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const enabledModules = c.get('enabledModules') as string[]
 
@@ -180,7 +181,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── PATCH /api/admin/modules ─────────────────────────────────────────────────
   // Enable or disable a module for this tenant (org_admin only)
   app.patch('/api/admin/modules', requireAuth('org_admin'), zValidator('json', updateModulesSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const tenant = c.get('tenant')
     const { moduleId, enabled } = c.req.valid('json')
@@ -230,7 +231,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/stats ───────────────────────────────────────────────────────────
   // Community-level stats for the home dashboard
   app.get('/api/stats', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
@@ -262,7 +263,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/activity ────────────────────────────────────────────────────────
   // Recent activity feed: latest threads + ideas + events
   app.get('/api/activity', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const limit = Math.min(50, Math.max(1, Number(c.req.query('limit') ?? '20')))
 
@@ -375,7 +376,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   })
 
   app.patch('/api/me', requireAuth(), zValidator('json', updateProfileSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const data = c.req.valid('json')
@@ -403,7 +404,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/notifications ───────────────────────────────────────────────────
   // List notifications for the current member
   app.get('/api/notifications', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const unreadOnly = c.req.query('unread_only') === 'true'
@@ -444,7 +445,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/notifications/read-all ────────────────────────────────────────
   app.patch('/api/notifications/read-all', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
 
@@ -462,7 +463,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/notifications/:id/read ───────────────────────────────────────
   app.patch('/api/notifications/:id/read', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const notifId = c.req.param('id')
@@ -483,7 +484,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   // Upgraded from ILIKE to PostgreSQL FTS with ts_rank relevance ordering and
   // ts_headline snippet extraction. KB articles added to results.
   app.get('/api/search', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const q = c.req.query('q')?.trim() ?? ''
     const limit = Math.min(50, Math.max(1, Number(c.req.query('limit') ?? '10')))
@@ -610,7 +611,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
     logoUrl: z.string().url().or(z.literal('')).optional(),
     primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
   })), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const body = c.req.valid('json')
 
@@ -630,7 +631,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/admin/webhooks ──────────────────────────────────────────────────
   app.get('/api/admin/webhooks', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const rows = await db
       .select()
@@ -647,7 +648,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
     secret: z.string().min(8).optional(),
     enabled: z.boolean().optional().default(true),
   })), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const body = c.req.valid('json')
 
@@ -674,7 +675,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
     events: z.array(z.string()).min(1).optional(),
     enabled: z.boolean().optional(),
   })), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const id = c.req.param('id')
     const body = c.req.valid('json')
@@ -698,7 +699,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
   // ─── DELETE /api/admin/webhooks/:id ──────────────────────────────────────────
   app.delete('/api/admin/webhooks/:id', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const id = c.req.param('id')
 
@@ -713,7 +714,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/admin/webhooks/:id/deliveries ───────────────────────────────────
   app.get('/api/admin/webhooks/:id/deliveries', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const id = c.req.param('id')
     const limit = Math.min(50, Number(c.req.query('limit') ?? '20'))
@@ -738,7 +739,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/me/email-preferences ───────────────────────────────────────────
   app.get('/api/me/email-preferences', requireAuth(), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
 
@@ -758,7 +759,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
       frequency: z.enum(['instant', 'daily', 'weekly', 'never']),
     })),
   })), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const { preferences } = c.req.valid('json')
@@ -804,7 +805,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
 
     if (signature !== expectedHex) return c.json({ error: 'Invalid token' }, 400)
 
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     // Set all preferences to never for this member
     await db.update(emailPreferences)
       .set({ enabled: false, frequency: 'never', updatedAt: new Date() })
@@ -818,7 +819,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
   app.patch('/api/admin/members/:id/role', requireAuth('org_admin'), zValidator('json', z.object({
     role: z.enum(['guest', 'member', 'moderator', 'org_admin']),
   })), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const memberId = c.req.param('id')
     const { role } = c.req.valid('json')

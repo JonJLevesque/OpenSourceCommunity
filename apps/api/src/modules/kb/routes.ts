@@ -18,7 +18,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   // GET /api/kb/categories
   // ---------------------------------------------------------------------------
   kbRouter.get('/categories', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
 
     const categories = await db.query.kbCategories.findMany({
@@ -40,7 +40,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   })
 
   kbRouter.post('/categories', requireAuth('org_admin'), zValidator('json', createCategorySchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const data = c.req.valid('json')
 
@@ -59,7 +59,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   // GET /api/kb/search
   // ---------------------------------------------------------------------------
   kbRouter.get('/search', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const { q } = c.req.query()
@@ -92,7 +92,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   // GET /api/kb/articles
   // ---------------------------------------------------------------------------
   kbRouter.get('/articles', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const { categoryId, visibility, published, page = '1', limit = '20' } = c.req.query()
@@ -125,7 +125,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   // GET /api/kb/articles/:id
   // ---------------------------------------------------------------------------
   kbRouter.get('/articles/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const articleId = c.req.param('id')
@@ -164,7 +164,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   })
 
   kbRouter.post('/articles', requireAuth('moderator'), zValidator('json', createArticleSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const data = c.req.valid('json')
@@ -208,7 +208,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   })
 
   kbRouter.patch('/articles/:id', requireAuth('moderator'), zValidator('json', updateArticleSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const articleId = c.req.param('id')
@@ -261,7 +261,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   // DELETE /api/kb/articles/:id (unpublish + soft-delete)
   // ---------------------------------------------------------------------------
   kbRouter.delete('/articles/:id', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const articleId = c.req.param('id')
 
@@ -282,7 +282,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   // GET /api/kb/articles/:id/versions
   // ---------------------------------------------------------------------------
   kbRouter.get('/articles/:id/versions', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const articleId = c.req.param('id')
 
@@ -309,7 +309,7 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   })
 
   kbRouter.post('/articles/:id/feedback', zValidator('json', feedbackSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const articleId = c.req.param('id')

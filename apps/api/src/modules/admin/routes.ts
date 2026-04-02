@@ -43,7 +43,7 @@ export function registerAdminRoutes(app: Hono<HonoEnv>) {
   // ─── GET /api/admin/analytics ─────────────────────────────────────────────────
   // Member growth + content activity over the last N days (for charts)
   app.get('/api/admin/analytics', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { days = '30' } = c.req.query()
     const daysNum = Math.min(90, Math.max(7, Number(days)))
@@ -139,7 +139,7 @@ export function registerAdminRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/admin/audit-log ─────────────────────────────────────────────────
   app.get('/api/admin/audit-log', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { limit = '50', before } = c.req.query()
     const limitNum = Math.min(100, Math.max(1, Number(limit)))
@@ -162,7 +162,7 @@ export function registerAdminRoutes(app: Hono<HonoEnv>) {
   // ─── POST /api/admin/audit-log ────────────────────────────────────────────────
   // Internal — called by route handlers when admins perform actions
   app.post('/api/admin/audit-log', requireAuth('org_admin'), zValidator('json', auditLogSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const { action, resourceType, resourceId, metadata } = c.req.valid('json')
@@ -182,7 +182,7 @@ export function registerAdminRoutes(app: Hono<HonoEnv>) {
 
   // ─── GET /api/admin/reports ───────────────────────────────────────────────────
   app.get('/api/admin/reports', requireAuth('moderator'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const { status = 'pending', limit = '20' } = c.req.query()
     const limitNum = Math.min(100, Number(limit))
@@ -203,7 +203,7 @@ export function registerAdminRoutes(app: Hono<HonoEnv>) {
   // ─── POST /api/reports ────────────────────────────────────────────────────────
   // Members submit reports on content
   app.post('/api/reports', requireAuth(), zValidator('json', reportSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const body = c.req.valid('json')
@@ -231,7 +231,7 @@ export function registerAdminRoutes(app: Hono<HonoEnv>) {
 
   // ─── PATCH /api/admin/reports/:id ────────────────────────────────────────────
   app.patch('/api/admin/reports/:id', requireAuth('moderator'), zValidator('json', resolveReportSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const reportId = c.req.param('id')

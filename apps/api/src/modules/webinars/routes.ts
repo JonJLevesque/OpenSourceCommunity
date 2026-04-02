@@ -16,7 +16,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // GET /api/webinars
   // ---------------------------------------------------------------------------
   router.get('/', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const { status, page = '1', limit = '20' } = c.req.query()
@@ -61,7 +61,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // GET /api/webinars/:id
   // ---------------------------------------------------------------------------
   router.get('/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const webinarId = c.req.param('id')
@@ -108,7 +108,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   })
 
   router.post('/', requireAuth('org_admin'), zValidator('json', createWebinarSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const data = c.req.valid('json')
@@ -145,7 +145,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   })
 
   router.patch('/:id', requireAuth('org_admin'), zValidator('json', updateWebinarSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const webinarId = c.req.param('id')
     const data = c.req.valid('json')
@@ -178,7 +178,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // POST /api/webinars/:id/register
   // ---------------------------------------------------------------------------
   router.post('/:id/register', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const webinarId = c.req.param('id')
@@ -224,7 +224,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // DELETE /api/webinars/:id/register — cancel registration
   // ---------------------------------------------------------------------------
   router.delete('/:id/register', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const webinarId = c.req.param('id')
@@ -244,7 +244,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // GET /api/webinars/:id/qa
   // ---------------------------------------------------------------------------
   router.get('/:id/qa', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const webinarId = c.req.param('id')
 
@@ -270,7 +270,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   })
 
   router.post('/:id/qa', requireAuth('member'), zValidator('json', submitQuestionSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const webinarId = c.req.param('id')
@@ -296,7 +296,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   const answerQuestionSchema = z.object({ answer: z.string().min(1) })
 
   router.patch('/:id/qa/:qaId', requireAuth('moderator'), zValidator('json', answerQuestionSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const webinarId = c.req.param('id')
@@ -322,7 +322,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // POST /api/webinars/:id/qa/:qaId/upvote — increment upvotes
   // ---------------------------------------------------------------------------
   router.post('/:id/qa/:qaId/upvote', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const webinarId = c.req.param('id')
     const qaId = c.req.param('qaId')
@@ -346,7 +346,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   // GET /api/webinars/:id/polls
   // ---------------------------------------------------------------------------
   router.get('/:id/polls', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const webinarId = c.req.param('id')
 
@@ -373,7 +373,7 @@ export function registerWebinarsRoutes(app: Hono<HonoEnv>) {
   })
 
   router.post('/:id/polls', requireAuth('org_admin'), zValidator('json', createPollSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const webinarId = c.req.param('id')
     const data = c.req.valid('json')

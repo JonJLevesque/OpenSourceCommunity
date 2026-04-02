@@ -82,6 +82,7 @@ export interface HonoEnv {
     EMAIL_DOMAIN?: string       // Mailgun domain
     INTERNAL_SECRET?: string    // Shared secret for /internal/* Worker-to-Worker routes
     AI?: Ai                     // Cloudflare Workers AI binding (optional)
+    HYPERDRIVE?: { connectionString: string }  // Cloudflare Hyperdrive binding
   }
   Variables: {
     tenantId: string

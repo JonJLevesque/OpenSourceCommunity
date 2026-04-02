@@ -16,7 +16,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   // GET /api/courses/my-enrollments — registered BEFORE /:id to avoid conflict
   // ---------------------------------------------------------------------------
   coursesRouter.get('/my-enrollments', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
 
@@ -34,7 +34,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   // GET /api/courses — list courses
   // ---------------------------------------------------------------------------
   coursesRouter.get('/', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const { page = '1', limit = '20' } = c.req.query()
@@ -71,7 +71,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   // GET /api/courses/:id — course with lessons and enrollment status
   // ---------------------------------------------------------------------------
   coursesRouter.get('/:id', async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')
     const courseId = c.req.param('id')
@@ -114,7 +114,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   })
 
   coursesRouter.post('/', requireAuth('org_admin'), zValidator('json', createCourseSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const data = c.req.valid('json')
@@ -142,7 +142,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   })
 
   coursesRouter.patch('/:id', requireAuth('org_admin'), zValidator('json', updateCourseSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const courseId = c.req.param('id')
     const data = c.req.valid('json')
@@ -179,7 +179,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   })
 
   coursesRouter.post('/:id/lessons', requireAuth('org_admin'), zValidator('json', createLessonSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const courseId = c.req.param('id')
     const data = c.req.valid('json')
@@ -223,7 +223,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   })
 
   coursesRouter.patch('/:id/lessons/:lessonId', requireAuth('org_admin'), zValidator('json', updateLessonSchema), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const courseId = c.req.param('id')
     const lessonId = c.req.param('lessonId')
@@ -264,7 +264,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   // DELETE /api/courses/:id/lessons/:lessonId — delete lesson (org_admin)
   // ---------------------------------------------------------------------------
   coursesRouter.delete('/:id/lessons/:lessonId', requireAuth('org_admin'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const courseId = c.req.param('id')
     const lessonId = c.req.param('lessonId')
@@ -294,7 +294,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   // POST /api/courses/:id/enroll — enroll current user
   // ---------------------------------------------------------------------------
   coursesRouter.post('/:id/enroll', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const courseId = c.req.param('id')
@@ -330,7 +330,7 @@ export function registerCoursesRoutes(app: Hono<HonoEnv>) {
   // POST /api/courses/:id/lessons/:lessonId/complete — mark lesson complete
   // ---------------------------------------------------------------------------
   coursesRouter.post('/:id/lessons/:lessonId/complete', requireAuth('member'), async (c) => {
-    const db = getClient(c.env.DATABASE_URL)
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
     const tenantId = c.get('tenantId')
     const member = c.get('member')!
     const courseId = c.req.param('id')

@@ -11,7 +11,7 @@ export async function runPipeline(
   platforms: Platform[],
   connector: (platform: Platform) => { fetchMentions: (keywords: string[], opts?: { since?: Date }) => AsyncGenerator<RawMention> } | null
 ): Promise<void> {
-  const db = createClient(env.DATABASE_URL)
+  const db = createClient(env.HYPERDRIVE?.connectionString ?? env.DATABASE_URL)
   const dedup = createDeduplicator(env)
 
   // Get all active tenant keyword configs for these platforms

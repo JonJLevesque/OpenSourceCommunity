@@ -3,7 +3,7 @@ import type { HonoEnv } from '@osc/core'
 import { createClient } from '@supabase/supabase-js'
 import { getClient } from '@osc/db'
 import { members } from '@osc/db/schema'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 
 export const authMiddleware: MiddlewareHandler<HonoEnv> = async (c, next) => {
   const authorization = c.req.header('Authorization')
@@ -25,7 +25,7 @@ export const authMiddleware: MiddlewareHandler<HonoEnv> = async (c, next) => {
   }
 
   // Look up the member record for this tenant
-  const db = getClient(c.env.DATABASE_URL)
+  const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
   const tenantId = c.get('tenantId')
 
   const member = await db.query.members.findFirst({
