@@ -8,6 +8,9 @@ import { YouTubeConnector } from './connectors/youtube'
 import { GitHubConnector } from './connectors/github'
 import { DiscordConnector } from './connectors/discord'
 import { TikTokConnector } from './connectors/tiktok'
+import { G2Connector } from './connectors/g2'
+import { TrustpilotConnector } from './connectors/trustpilot'
+import { ProductHuntConnector } from './connectors/producthunt'
 
 // Map cron schedule to which platforms to poll
 function getPlatformsForCron(cron: string): Platform[] {
@@ -46,6 +49,18 @@ function getConnector(env: Env) {
       case 'tiktok':
         return env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET
           ? new TikTokConnector(env.TIKTOK_CLIENT_KEY, env.TIKTOK_CLIENT_SECRET)
+          : null
+      case 'g2':
+        return env.G2_API_KEY
+          ? new G2Connector(env.G2_API_KEY, env.G2_PRODUCT_SLUG)
+          : null
+      case 'trustpilot':
+        return env.TRUSTPILOT_API_KEY && env.TRUSTPILOT_BUSINESS_UNIT_ID
+          ? new TrustpilotConnector(env.TRUSTPILOT_API_KEY, env.TRUSTPILOT_BUSINESS_UNIT_ID)
+          : null
+      case 'producthunt':
+        return env.PRODUCTHUNT_API_KEY
+          ? new ProductHuntConnector(env.PRODUCTHUNT_API_KEY)
           : null
       case 'discord': {
         const channelIds = env.DISCORD_CHANNEL_IDS

@@ -34,6 +34,14 @@ OLLAMA_URL=http://localhost:11434
 # TikTok — Research API credentials (apply at developers.tiktok.com)
 # TIKTOK_CLIENT_KEY=your-client-key
 # TIKTOK_CLIENT_SECRET=your-client-secret
+# G2 — Partner API (requires approval at sell.g2.com/partners/technology/api)
+# G2_API_KEY=your-api-key
+# G2_PRODUCT_SLUG=your-product-slug
+# Trustpilot — Business API (businessapp.trustpilot.com for business unit ID)
+# TRUSTPILOT_API_KEY=your-api-key
+# TRUSTPILOT_BUSINESS_UNIT_ID=your-business-unit-id
+# Product Hunt — developer token (api.producthunt.com/v2/oauth/applications)
+# PRODUCTHUNT_API_KEY=your-developer-token
 
 # Alert callback — URL of the API worker + shared secret
 # Must match INTERNAL_SECRET in apps/api/.dev.vars

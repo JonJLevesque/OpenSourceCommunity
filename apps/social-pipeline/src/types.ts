@@ -27,6 +27,11 @@ export interface Env {
   DISCORD_CHANNEL_IDS?: string    // Comma-separated channel IDs to monitor
   TIKTOK_CLIENT_KEY?: string      // TikTok Research API client key
   TIKTOK_CLIENT_SECRET?: string   // TikTok Research API client secret
+  G2_API_KEY?: string             // G2 Partner API key (data.g2.com — requires partner approval)
+  G2_PRODUCT_SLUG?: string        // Your product's G2 slug (e.g. "my-product")
+  TRUSTPILOT_API_KEY?: string     // Trustpilot Business API key
+  TRUSTPILOT_BUSINESS_UNIT_ID?: string // Trustpilot business unit ID
+  PRODUCTHUNT_API_KEY?: string    // Product Hunt API developer token
   // Internal API callback for alert notifications
   API_BASE_URL?: string       // e.g. https://api.opensourcecommunity.io
   INTERNAL_SECRET?: string    // shared secret for /internal/* routes
