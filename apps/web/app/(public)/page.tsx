@@ -779,32 +779,35 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Multilingual AI */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Social Loop */}
             <div className="rounded-2xl border border-violet-200 bg-white p-7 shadow-sm">
               <div className="h-11 w-11 rounded-xl bg-violet-50 flex items-center justify-center mb-5">
-                <GlobeIcon className="h-5 w-5 text-violet-600" />
+                <svg className="h-5 w-5 text-violet-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  <path d="m17 11-5-5-5 5" /><path d="M12 6v9" />
+                </svg>
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700 mb-3">
-                Flagship
+                Phase 3
               </div>
-              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Multilingual AI</h3>
+              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Social Loop</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                AI-powered translation built into every module. Post in any language, read in yours. Break down language barriers across your entire community — forums, chat, knowledge base, and more.
+                Every social mention becomes a community conversation. Reply in your forum — the answer goes back to Reddit, Twitter, or wherever it came from.
               </p>
             </div>
 
-            {/* Slack Bridge */}
+            {/* Multilingual AI */}
             <div className="rounded-2xl border border-border bg-white p-7 shadow-sm">
               <div className="h-11 w-11 rounded-xl bg-emerald-50 flex items-center justify-center mb-5">
-                <SlackIcon className="h-5 w-5 text-emerald-600" />
+                <GlobeIcon className="h-5 w-5 text-emerald-600" />
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-3">
-                High priority
+                Phase 2
               </div>
-              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Slack Bridge</h3>
+              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Multilingual AI</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Sync your existing Slack workspace with OSC. Posts flow both ways — keep your team where they are while your community grows on an open platform you actually own.
+                Powered by Gemini and Claude. Post in any language, read in yours. Translation built into every module — forums, chat, knowledge base, and more.
               </p>
             </div>
 
@@ -817,21 +820,35 @@ export default function LandingPage() {
                 </svg>
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700 mb-3">
-                Coming soon
+                Phase 4
               </div>
               <h3 className="text-lg font-semibold text-surface-foreground mb-2">Fediverse (ActivityPub)</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Every OSC instance becomes a fediverse node. Forums federate like Mastodon threads, members get portable identities, and communities connect across the open social web.
+                Every OSC instance becomes a fediverse node. Forums federate like Mastodon threads, members get portable identities across the open social web.
+              </p>
+            </div>
+
+            {/* Slack Bridge */}
+            <div className="rounded-2xl border border-border bg-white p-7 shadow-sm">
+              <div className="h-11 w-11 rounded-xl bg-sky-50 flex items-center justify-center mb-5">
+                <SlackIcon className="h-5 w-5 text-sky-600" />
+              </div>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-700 mb-3">
+                Phase 6
+              </div>
+              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Slack Bridge</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Sync your Slack workspace with OSC forums. Posts flow both ways — keep your team where they are while your community grows on a platform you own.
               </p>
             </div>
           </div>
 
           <div className="text-center mt-10">
             <Link
-              href="https://github.com/JonJLevesque/OpenSourceCommunity/issues"
+              href="https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aroadmap"
               className="inline-flex items-center gap-2 text-brand font-semibold text-base hover:opacity-80 transition-opacity"
             >
-              Follow the roadmap on GitHub
+              View the full roadmap on GitHub
               <ArrowRightIcon className="h-4 w-4" />
             </Link>
           </div>

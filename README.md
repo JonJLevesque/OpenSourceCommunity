@@ -176,11 +176,16 @@ This project is built in public — contributions are genuinely welcome.
 
 ## Roadmap
 
-- ActivityPub / Fediverse federation
-- Multilingual AI (translate content on the fly)
-- Slack bridge (sync Slack workspace with forums)
-- Member gamification (badges, points, leaderboards)
-- Mobile app
+Full roadmap tracked as [GitHub Issues →](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aroadmap)
+
+| Phase | Focus | Issues |
+|-------|-------|--------|
+| **Phase 1** | Complete social listening — 8 remaining connectors (LinkedIn, YouTube, GitHub, Discord, TikTok, G2, Trustpilot, Product Hunt) + UI polish | [#1–#8](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-1) |
+| **Phase 2** | Multilingual AI — translate all content on the fly via Gemini / Claude | [#9–#10](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-2) |
+| **Phase 3** | Social Loop — mentions become community threads, replies flow back to source platforms | [#11–#13](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-3) |
+| **Phase 4** | Fediverse / ActivityPub — federated identities, portable handles, interop with Mastodon/Lemmy | [#14–#17](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-4) |
+| **Phase 5** | Federation Registry — portable usernames, SSO across OSC instances, community directory | [#18](https://github.com/JonJLevesque/OpenSourceCommunity/issues/18) |
+| **Phase 6** | Slack bridge, member gamification, mobile app | [#19–#21](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aroadmap) |
 
 ---
 
