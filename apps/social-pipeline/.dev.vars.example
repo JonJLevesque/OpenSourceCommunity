@@ -26,6 +26,8 @@ OLLAMA_URL=http://localhost:11434
 # LinkedIn — OAuth2 token with r_organization_social scope (from LinkedIn Developer Portal)
 # LINKEDIN_ACCESS_TOKEN=your-access-token
 # LINKEDIN_ORG_URN=urn:li:organization:12345  # Optional: scope monitoring to a specific org
+# YouTube — Google Cloud API key with YouTube Data API v3 enabled
+# YOUTUBE_API_KEY=your-api-key
 
 # Alert callback — URL of the API worker + shared secret
 # Must match INTERNAL_SECRET in apps/api/.dev.vars

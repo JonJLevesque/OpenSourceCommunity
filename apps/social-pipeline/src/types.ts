@@ -22,6 +22,7 @@ export interface Env {
   GITHUB_TOKEN?: string
   LINKEDIN_ACCESS_TOKEN?: string  // OAuth2 token with r_organization_social scope
   LINKEDIN_ORG_URN?: string       // e.g. urn:li:organization:12345 (optional)
+  YOUTUBE_API_KEY?: string        // Google Cloud API key with YouTube Data API v3 enabled
   // Internal API callback for alert notifications
   API_BASE_URL?: string       // e.g. https://api.opensourcecommunity.io
   INTERNAL_SECRET?: string    // shared secret for /internal/* routes

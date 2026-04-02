@@ -4,6 +4,7 @@ import { TwitterConnector } from './connectors/twitter'
 import { RedditConnector } from './connectors/reddit'
 import { HackerNewsConnector } from './connectors/hackernews'
 import { LinkedInConnector } from './connectors/linkedin'
+import { YouTubeConnector } from './connectors/youtube'
 
 // Map cron schedule to which platforms to poll
 function getPlatformsForCron(cron: string): Platform[] {
@@ -30,6 +31,10 @@ function getConnector(env: Env) {
       case 'linkedin':
         return env.LINKEDIN_ACCESS_TOKEN
           ? new LinkedInConnector(env.LINKEDIN_ACCESS_TOKEN, env.LINKEDIN_ORG_URN)
+          : null
+      case 'youtube':
+        return env.YOUTUBE_API_KEY
+          ? new YouTubeConnector(env.YOUTUBE_API_KEY)
           : null
       default:
         // Other connectors — stub for now, implement in Phase 2
