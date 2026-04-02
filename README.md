@@ -132,6 +132,26 @@ Full deployment details: [`/docs/self-hosting.md`](./docs/self-hosting.md) _(if 
 | `DEFAULT_TENANT_SLUG` | Default tenant slug for single-tenant deployments |
 | `APP_DOMAIN` | Your app domain |
 
+### Social Pipeline Worker (`apps/social-pipeline/wrangler.toml` secrets)
+
+The pipeline monitors 11 platforms for brand mentions. All are optional — it runs fine with just the ones you configure. Reddit and HackerNews require no credentials.
+
+| Platform | Credentials needed | Notes |
+|----------|-------------------|-------|
+| Reddit | None | Works out of the box |
+| HackerNews | None | Works out of the box |
+| Twitter / X | `TWITTER_BEARER_TOKEN` | Basic tier ($100/mo) or higher required |
+| GitHub | `GITHUB_TOKEN` | Free — classic PAT, no scopes needed for public content |
+| YouTube | `YOUTUBE_API_KEY` | Free — Google Cloud API key, 10k units/day quota |
+| Discord | `DISCORD_BOT_TOKEN` + `DISCORD_CHANNEL_IDS` | Bot needs MESSAGE_CONTENT intent enabled |
+| LinkedIn | `LINKEDIN_ACCESS_TOKEN` + `LINKEDIN_ORG_URN` | Requires LinkedIn Partner approval (days–weeks) |
+| TikTok | `TIKTOK_CLIENT_KEY` + `TIKTOK_CLIENT_SECRET` | Requires Research API approval |
+| G2 | `G2_API_KEY` + `G2_PRODUCT_SLUG` | Requires G2 Partner approval |
+| Trustpilot | `TRUSTPILOT_API_KEY` + `TRUSTPILOT_BUSINESS_UNIT_ID` | Business account required |
+| Product Hunt | `PRODUCTHUNT_API_KEY` | Free — developer token |
+
+**Full setup guide:** [`/docs/social-pipeline.md`](./docs/social-pipeline.md) — covers where to get credentials, rate limits, and gotchas for each platform.
+
 ---
 
 ## Project Structure
