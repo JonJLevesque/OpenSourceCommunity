@@ -186,7 +186,7 @@ Released under the **[OpenSourceCommunity Non-Commercial License](./LICENSE)**.
 
 Free for personal, educational, and non-commercial use.
 
-For commercial licensing: [hello@opensourcecommunity.io](mailto:hello@opensourcecommunity.io)
+For commercial licensing: [Me@Jonlevesque.com](mailto:Me@Jonlevesque.com)
 
 ---
 
