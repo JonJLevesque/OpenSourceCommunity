@@ -7,6 +7,7 @@ import { LinkedInConnector } from './connectors/linkedin'
 import { YouTubeConnector } from './connectors/youtube'
 import { GitHubConnector } from './connectors/github'
 import { DiscordConnector } from './connectors/discord'
+import { TikTokConnector } from './connectors/tiktok'
 
 // Map cron schedule to which platforms to poll
 function getPlatformsForCron(cron: string): Platform[] {
@@ -41,6 +42,10 @@ function getConnector(env: Env) {
       case 'github':
         return env.GITHUB_TOKEN
           ? new GitHubConnector(env.GITHUB_TOKEN)
+          : null
+      case 'tiktok':
+        return env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET
+          ? new TikTokConnector(env.TIKTOK_CLIENT_KEY, env.TIKTOK_CLIENT_SECRET)
           : null
       case 'discord': {
         const channelIds = env.DISCORD_CHANNEL_IDS

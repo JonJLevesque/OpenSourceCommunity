@@ -31,6 +31,9 @@ OLLAMA_URL=http://localhost:11434
 # Discord — bot token + comma-separated channel IDs to monitor (no search API; filters locally)
 # DISCORD_BOT_TOKEN=your-bot-token
 # DISCORD_CHANNEL_IDS=123456789,987654321
+# TikTok — Research API credentials (apply at developers.tiktok.com)
+# TIKTOK_CLIENT_KEY=your-client-key
+# TIKTOK_CLIENT_SECRET=your-client-secret
 
 # Alert callback — URL of the API worker + shared secret
 # Must match INTERNAL_SECRET in apps/api/.dev.vars

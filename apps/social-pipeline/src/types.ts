@@ -25,6 +25,8 @@ export interface Env {
   YOUTUBE_API_KEY?: string        // Google Cloud API key with YouTube Data API v3 enabled
   DISCORD_BOT_TOKEN?: string      // Discord bot token (requires MESSAGE_CONTENT intent)
   DISCORD_CHANNEL_IDS?: string    // Comma-separated channel IDs to monitor
+  TIKTOK_CLIENT_KEY?: string      // TikTok Research API client key
+  TIKTOK_CLIENT_SECRET?: string   // TikTok Research API client secret
   // Internal API callback for alert notifications
   API_BASE_URL?: string       // e.g. https://api.opensourcecommunity.io
   INTERNAL_SECRET?: string    // shared secret for /internal/* routes
