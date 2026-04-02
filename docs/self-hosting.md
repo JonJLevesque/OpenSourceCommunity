@@ -258,10 +258,24 @@ After setup completes, sign in at `/login` — you'll have full access to the ad
 | `TWITTER_BEARER_TOKEN` | Optional | Twitter/X API v2 bearer token |
 | `REDDIT_CLIENT_ID` | Optional | Reddit app client ID |
 | `REDDIT_CLIENT_SECRET` | Optional | Reddit app client secret |
-| `GITHUB_TOKEN` | Optional | GitHub personal access token |
+| `GITHUB_TOKEN` | Optional | GitHub personal access token or fine-grained PAT |
+| `LINKEDIN_ACCESS_TOKEN` | Optional | OAuth2 token with `r_organization_social` scope |
+| `LINKEDIN_ORG_URN` | Optional | e.g. `urn:li:organization:12345` — scopes monitoring to your org |
+| `YOUTUBE_API_KEY` | Optional | Google Cloud API key with YouTube Data API v3 enabled |
+| `DISCORD_BOT_TOKEN` | Optional | Discord bot token — requires `MESSAGE_CONTENT` intent |
+| `DISCORD_CHANNEL_IDS` | Optional | Comma-separated channel IDs to monitor (e.g. `123456,789012`) |
+| `TIKTOK_CLIENT_KEY` | Optional | TikTok Research API client key |
+| `TIKTOK_CLIENT_SECRET` | Optional | TikTok Research API client secret |
+| `G2_API_KEY` | Optional | G2 Partner API key (requires partner approval at data.g2.com) |
+| `G2_PRODUCT_SLUG` | Optional | Your product's slug on G2 (e.g. `my-product`) |
+| `TRUSTPILOT_API_KEY` | Optional | Trustpilot Business API key |
+| `TRUSTPILOT_BUSINESS_UNIT_ID` | Optional | Your Trustpilot business unit ID |
+| `PRODUCTHUNT_API_KEY` | Optional | Product Hunt developer token |
 | `SENTIMENT_PROVIDER` | Optional | `cloudflare` \| `ollama` \| `huggingface` (default: cloudflare if AI binding present) |
 | `OLLAMA_URL` | Optional | Base URL for Ollama (self-hosted AI) |
 | `HUGGINGFACE_API_TOKEN` | Optional | HuggingFace Inference API token |
+
+For a detailed per-platform setup guide including where to get credentials and rate limit information, see [**Social Pipeline Setup**](./social-pipeline.md).
 
 ---
 
