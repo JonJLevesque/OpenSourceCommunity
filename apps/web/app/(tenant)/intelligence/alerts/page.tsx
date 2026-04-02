@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { apiGet } from '@/lib/api'
 import type { Metadata } from 'next'
+import { ResolveAlertButton, NotificationPreferences } from './alerts-client'
 
 export const metadata: Metadata = { title: 'Alerts' }
 
@@ -18,6 +19,14 @@ interface Alert {
 
 interface AlertsResponse {
   data: Alert[]
+}
+
+interface AlertConfig {
+  notificationChannels?: {
+    email?: boolean
+    slack?: boolean
+    inApp?: boolean
+  }
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -40,11 +49,10 @@ const ALERT_TYPE_CONFIG: Record<string, { label: string; badgeClass: string }> =
 }
 
 function alertTypeBadge(alertType: string) {
-  const cfg = ALERT_TYPE_CONFIG[alertType] ?? {
+  return ALERT_TYPE_CONFIG[alertType] ?? {
     label: alertType.replace(/_/g, ' '),
     badgeClass: 'bg-muted text-muted-foreground border border-border',
   }
-  return cfg
 }
 
 function payloadSummary(payload: Record<string, unknown>): string {
@@ -77,6 +85,20 @@ export default async function AlertsPage({
     // show empty state
   }
 
+  let alertConfig: AlertConfig = {}
+  try {
+    const resp = await apiGet<{ data: AlertConfig }>('/api/intelligence/alert-config', token, 0)
+    alertConfig = resp.data ?? {}
+  } catch {
+    // use defaults
+  }
+
+  const notifChannels = {
+    email: alertConfig.notificationChannels?.email ?? true,
+    slack: alertConfig.notificationChannels?.slack ?? false,
+    inApp: alertConfig.notificationChannels?.inApp ?? true,
+  }
+
   return (
     <div className="space-y-6">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
@@ -94,67 +116,45 @@ export default async function AlertsPage({
       </div>
 
       {/* ── Alert list ──────────────────────────────────────────────────────── */}
-      {alerts.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-card px-6 py-16 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-2xl">
-            🔔
-          </div>
-          <p className="text-sm font-semibold text-surface-foreground">
-            {tab === 'resolved' ? 'No resolved alerts' : 'No active alerts'}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {tab === 'resolved'
-              ? 'Resolved alerts will appear here once you acknowledge active ones.'
-              : "You're all caught up. Alerts will appear here when triggered."}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {alerts.map((alert) => (
-            <AlertCard key={alert.id} alert={alert} isResolved={status === 'resolved'} />
-          ))}
-        </div>
-      )}
+      <AlertList alerts={alerts} isResolved={status === 'resolved'} />
 
-      {/* ── Alert config section ─────────────────────────────────────────────── */}
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h3 className="mb-4 text-sm font-semibold text-surface-foreground">Notification Preferences</h3>
-        <div className="space-y-3">
-          <NotifRow
-            label="Email notifications"
-            description="Receive alerts via email when triggered"
-            defaultEnabled
-          />
-          <NotifRow
-            label="Slack notifications"
-            description="Post alerts to a Slack channel"
-            defaultEnabled={false}
-          />
-          <NotifRow
-            label="In-app notifications"
-            description="Show a banner inside the platform"
-            defaultEnabled
-          />
-        </div>
-        <p className="mt-4 text-xs text-muted-foreground">
-          Full notification configuration is available in Admin &rsaquo; Settings &rsaquo; Notifications.
+      {/* ── Notification preferences ─────────────────────────────────────────── */}
+      <NotificationPreferences initial={notifChannels} />
+    </div>
+  )
+}
+
+// ─── Alert List (server) ─────────────────────────────────────────────────────
+
+function AlertList({ alerts, isResolved }: { alerts: Alert[]; isResolved: boolean }) {
+  if (alerts.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-border bg-card px-6 py-16 text-center">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-2xl">🔔</div>
+        <p className="text-sm font-semibold text-surface-foreground">
+          {isResolved ? 'No resolved alerts' : 'No active alerts'}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {isResolved
+            ? 'Resolved alerts will appear here once you acknowledge active ones.'
+            : "You're all caught up. Alerts will appear here when triggered."}
         </p>
       </div>
+    )
+  }
+
+  return (
+    <div className="space-y-3">
+      {alerts.map(alert => (
+        <AlertCard key={alert.id} alert={alert} isResolved={isResolved} />
+      ))}
     </div>
   )
 }
 
 // ─── Tab Link ────────────────────────────────────────────────────────────────
 
-function TabLink({
-  href,
-  isActive,
-  label,
-}: {
-  href: string
-  isActive: boolean
-  label: string
-}) {
+function TabLink({ href, isActive, label }: { href: string; isActive: boolean; label: string }) {
   return (
     <Link
       href={href}
@@ -181,12 +181,7 @@ function AlertCard({ alert, isResolved }: { alert: Alert; isResolved: boolean })
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <span
-              className={[
-                'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize',
-                badgeClass,
-              ].join(' ')}
-            >
+            <span className={['inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize', badgeClass].join(' ')}>
               {label}
             </span>
             {alert.triggeredAt && (
@@ -200,50 +195,7 @@ function AlertCard({ alert, isResolved }: { alert: Alert; isResolved: boolean })
             </p>
           )}
         </div>
-
-        {!isResolved && (
-          <button
-            type="button"
-            className="flex-shrink-0 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
-          >
-            Resolve
-          </button>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// ─── Notification Row ────────────────────────────────────────────────────────
-
-function NotifRow({
-  label,
-  description,
-  defaultEnabled,
-}: {
-  label: string
-  description: string
-  defaultEnabled: boolean
-}) {
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-border last:border-0">
-      <div>
-        <p className="text-sm font-medium text-surface-foreground">{label}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-      <div
-        className={[
-          'relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-not-allowed',
-          defaultEnabled ? 'bg-brand' : 'bg-muted',
-        ].join(' ')}
-        title="Configure in Admin Settings"
-      >
-        <span
-          className={[
-            'inline-block h-3.5 w-3.5 rounded-full bg-card shadow-sm transition-transform',
-            defaultEnabled ? 'translate-x-4' : 'translate-x-0.5',
-          ].join(' ')}
-        />
+        {!isResolved && <ResolveAlertButton alertId={alert.id} />}
       </div>
     </div>
   )

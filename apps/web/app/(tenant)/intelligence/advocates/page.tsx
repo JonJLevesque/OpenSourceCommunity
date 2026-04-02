@@ -232,12 +232,12 @@ export default async function AdvocatesPage() {
                       {advocate.totalEngagement.toLocaleString()}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button
-                        type="button"
+                      <a
+                        href={`/intelligence/inbox?author=${encodeURIComponent(advocate.handle)}`}
                         className="rounded-md bg-brand/5 px-2.5 py-1 text-xs font-medium text-brand hover:bg-brand/10 transition-colors"
                       >
                         View mentions
-                      </button>
+                      </a>
                     </td>
                   </tr>
                 ))}

@@ -74,6 +74,7 @@ interface PageProps {
     to?: string
     page?: string
     status?: string
+    author?: string
   }>
 }
 
@@ -103,6 +104,7 @@ export default async function IntelligenceInboxPage({ searchParams }: PageProps)
   // The API accepts single platform/sentiment filter; if multiple selected, skip filter (show all)
   if (platforms.length === 1) qs.set('platform', platforms[0]!)
   if (sentiments.length === 1) qs.set('sentiment', sentiments[0]!)
+  if (params.author) qs.set('author', params.author)
 
   let mentions: Mention[] = []
   let total = 0

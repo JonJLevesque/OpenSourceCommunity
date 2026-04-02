@@ -17,12 +17,20 @@ interface MemberSentimentBreakdown {
   nonMemberNeutral: number
 }
 
+interface TrendPoint {
+  date: string
+  positive: number
+  negative: number
+  neutral: number
+}
+
 interface SentimentStats {
   totalMentions: number
   netSentimentScore: number  // percentage: positive% - negative%
   advocatesIdentified: number
   platformBreakdown: PlatformRow[]
   memberSentiment?: MemberSentimentBreakdown
+  trend?: TrendPoint[]
 }
 
 interface PlatformRow {
@@ -165,17 +173,7 @@ export default async function SentimentPage({
       {/* ── Sentiment trend chart ────────────────────────────────────────────── */}
       <div className="rounded-xl border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold text-surface-foreground">Sentiment trend</h3>
-        <div className="flex h-52 items-center justify-center rounded-xl border border-dashed border-border bg-muted">
-          <div className="text-center">
-            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
-              <ChartIcon />
-            </div>
-            <p className="text-sm font-medium text-muted-foreground">Chart coming soon</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Sentiment trend chart will be wired up in the analytics sprint.
-            </p>
-          </div>
-        </div>
+        <SentimentTrendChart trend={stats.trend ?? []} />
       </div>
 
       {/* ── Platform breakdown table ─────────────────────────────────────────── */}
@@ -281,6 +279,125 @@ export default async function SentimentPage({
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+// ─── Sentiment Trend Chart (inline SVG, no deps) ─────────────────────────────
+
+function SentimentTrendChart({ trend }: { trend: TrendPoint[] }) {
+  if (trend.length === 0) {
+    return (
+      <div className="flex h-52 items-center justify-center rounded-xl border border-dashed border-border bg-muted">
+        <div className="text-center">
+          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <ChartIcon />
+          </div>
+          <p className="text-sm font-medium text-muted-foreground">No data yet</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Trend will appear once mentions are collected.</p>
+        </div>
+      </div>
+    )
+  }
+
+  const W = 600
+  const H = 160
+  const PAD = { top: 12, right: 12, bottom: 24, left: 36 }
+  const chartW = W - PAD.left - PAD.right
+  const chartH = H - PAD.top - PAD.bottom
+
+  const maxVal = Math.max(1, ...trend.map(d => d.positive + d.negative + d.neutral))
+  const n = trend.length
+
+  function xPos(i: number) { return PAD.left + (i / Math.max(n - 1, 1)) * chartW }
+  function yPos(val: number) { return PAD.top + chartH - (val / maxVal) * chartH }
+
+  function polyline(vals: number[]) {
+    return vals.map((v, i) => `${xPos(i).toFixed(1)},${yPos(v).toFixed(1)}`).join(' ')
+  }
+
+  const positives = trend.map(d => d.positive)
+  const negatives = trend.map(d => d.negative)
+  const neutrals = trend.map(d => d.neutral)
+
+  // Y-axis ticks
+  const yTicks = [0, Math.round(maxVal / 2), maxVal]
+
+  // X-axis: show first, middle, last date label
+  const xLabels: { i: number; label: string }[] = []
+  if (n >= 1) xLabels.push({ i: 0, label: new Date(trend[0]!.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) })
+  if (n >= 3) xLabels.push({ i: Math.floor((n - 1) / 2), label: new Date(trend[Math.floor((n - 1) / 2)]!.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) })
+  if (n >= 2) xLabels.push({ i: n - 1, label: new Date(trend[n - 1]!.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) })
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" aria-hidden>
+        {/* Grid lines */}
+        {yTicks.map(tick => (
+          <g key={tick}>
+            <line
+              x1={PAD.left} y1={yPos(tick)}
+              x2={W - PAD.right} y2={yPos(tick)}
+              stroke="currentColor" strokeOpacity={0.08} strokeWidth={1}
+            />
+            <text x={PAD.left - 6} y={yPos(tick) + 4} textAnchor="end" fontSize={9} fill="currentColor" opacity={0.4}>
+              {tick}
+            </text>
+          </g>
+        ))}
+
+        {/* Neutral line */}
+        <polyline
+          points={polyline(neutrals)}
+          fill="none"
+          stroke="#94a3b8"
+          strokeWidth={1.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          opacity={0.6}
+        />
+        {/* Negative line */}
+        <polyline
+          points={polyline(negatives)}
+          fill="none"
+          stroke="#f87171"
+          strokeWidth={1.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {/* Positive line */}
+        <polyline
+          points={polyline(positives)}
+          fill="none"
+          stroke="#34d399"
+          strokeWidth={2}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+
+        {/* X-axis labels */}
+        {xLabels.map(({ i, label }) => (
+          <text key={i} x={xPos(i)} y={H - 2} textAnchor="middle" fontSize={9} fill="currentColor" opacity={0.4}>
+            {label}
+          </text>
+        ))}
+      </svg>
+
+      {/* Legend */}
+      <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2 w-5 rounded-full bg-emerald-400" />
+          Positive
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2 w-5 rounded-full bg-red-400" />
+          Negative
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2 w-5 rounded-full bg-slate-300" />
+          Neutral
+        </span>
+      </div>
     </div>
   )
 }

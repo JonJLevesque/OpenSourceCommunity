@@ -5,8 +5,8 @@ import type { HonoEnv } from '@osc/core'
 import { requireAuth } from '../../middleware/auth'
 import { requireModule } from '../../middleware/module'
 import { getClient } from '@osc/db'
-import { siKeywordGroups, siMentions, siAlerts, members } from '@osc/db/schema'
-import { eq, and, desc, sql, gte, count, isNull } from 'drizzle-orm'
+import { siKeywordGroups, siMentions, siAlerts, siAlertConfigs, members } from '@osc/db/schema'
+import { eq, and, desc, sql, gte, count, isNull, ilike } from 'drizzle-orm'
 
 // ─── Validators ─────────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
     const db = getClient(c.env.DATABASE_URL)
     const tenantId = c.get('tenantId')
 
-    const { page = '1', limit = '20', platform, sentiment, status = 'new' } = c.req.query()
+    const { page = '1', limit = '20', platform, sentiment, status = 'new', author } = c.req.query()
 
     const pageNum = Math.max(1, Number(page))
     const limitNum = Math.min(100, Math.max(1, Number(limit)))
@@ -54,6 +54,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
     if (sentiment) {
       conditions.push(eq(siMentions.sentiment, sentiment as 'positive' | 'negative' | 'neutral' | 'mixed'))
     }
+    if (author) conditions.push(ilike(siMentions.authorHandle, author))
 
     const whereClause = and(...conditions)
 
@@ -209,6 +210,29 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
 
     const advocatesIdentified = advocateRows.length
 
+    // Daily sentiment trend
+    const trendRows = await db
+      .select({
+        day: sql<string>`date_trunc('day', ${siMentions.collectedAt})::date`,
+        sentiment: siMentions.sentiment,
+        cnt: sql<number>`count(*)`,
+      })
+      .from(siMentions)
+      .where(whereClause)
+      .groupBy(sql`date_trunc('day', ${siMentions.collectedAt})::date`, siMentions.sentiment)
+      .orderBy(sql`date_trunc('day', ${siMentions.collectedAt})::date`)
+
+    const trendMap = new Map<string, { positive: number; negative: number; neutral: number }>()
+    for (const row of trendRows) {
+      const entry = trendMap.get(row.day) ?? { positive: 0, negative: 0, neutral: 0 }
+      const n = Number(row.cnt)
+      if (row.sentiment === 'positive') entry.positive += n
+      else if (row.sentiment === 'negative') entry.negative += n
+      else entry.neutral += n
+      trendMap.set(row.day, entry)
+    }
+    const trend = Array.from(trendMap.entries()).map(([date, s]) => ({ date, ...s }))
+
     return c.json({
       data: {
         totalMentions,
@@ -216,6 +240,7 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
         advocatesIdentified,
         platformBreakdown,
         memberSentiment: { ...mBreak, ...nmBreak },
+        trend,
       },
     })
   })
@@ -378,6 +403,55 @@ export function registerSocialIntelRoutes(app: Hono<HonoEnv>) {
     }
 
     return c.json({ data: { matched, unmatched: unlinked.length - matched } })
+  })
+
+  // ─── GET /api/intelligence/alert-config ──────────────────────────────────────
+  router.get('/alert-config', requireAuth('org_admin'), async (c) => {
+    const db = getClient(c.env.DATABASE_URL)
+    const tenantId = c.get('tenantId')
+
+    const [row] = await db
+      .select()
+      .from(siAlertConfigs)
+      .where(eq(siAlertConfigs.tenantId, tenantId))
+      .limit(1)
+
+    // Return defaults if not yet configured
+    const config = row ?? {
+      notificationChannels: { email: true, slack: false, inApp: true },
+    }
+
+    return c.json({ data: config })
+  })
+
+  // ─── PATCH /api/intelligence/alert-config ─────────────────────────────────────
+  router.patch('/alert-config', requireAuth('org_admin'), async (c) => {
+    const db = getClient(c.env.DATABASE_URL)
+    const tenantId = c.get('tenantId')
+    const body = await c.req.json() as {
+      notificationChannels?: { email?: boolean; slack?: boolean; inApp?: boolean }
+    }
+
+    const [existing] = await db
+      .select()
+      .from(siAlertConfigs)
+      .where(eq(siAlertConfigs.tenantId, tenantId))
+      .limit(1)
+
+    if (existing) {
+      const [updated] = await db
+        .update(siAlertConfigs)
+        .set({ notificationChannels: body.notificationChannels, updatedAt: new Date() })
+        .where(eq(siAlertConfigs.tenantId, tenantId))
+        .returning()
+      return c.json({ data: updated })
+    } else {
+      const [created] = await db
+        .insert(siAlertConfigs)
+        .values({ tenantId, notificationChannels: body.notificationChannels })
+        .returning()
+      return c.json({ data: created }, 201)
+    }
   })
 
   app.route('/api/intelligence', router)
