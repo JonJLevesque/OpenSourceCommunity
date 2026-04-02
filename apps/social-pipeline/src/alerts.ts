@@ -1,6 +1,6 @@
-import { eq, and, gte, sql } from 'drizzle-orm'
+import { eq, and, gte, sql, gt } from 'drizzle-orm'
 import { createClient } from '@osc/db'
-import { siAlertConfigs, siAlerts, siMentions } from '@osc/db'
+import { siAlertConfigs, siAlerts, siMentions, siKeywordGroups } from '@osc/db'
 import type { Env } from './types'
 
 async function notifyApi(env: Env, tenantId: string, alertType: string, alertId: string, payload: Record<string, unknown>): Promise<void> {
@@ -78,6 +78,43 @@ export async function evaluateAlerts(
     if (spikeId) await notifyApi(env, tenantId, 'volume_spike', spikeId, spikePayload)
   }
 
+  // Competitor mention alert — fire when a competitor keyword group gets any new mention
+  const competitorGroups = await db
+    .select({ id: siKeywordGroups.id, name: siKeywordGroups.name })
+    .from(siKeywordGroups)
+    .where(
+      and(
+        eq(siKeywordGroups.tenantId, tenantId),
+        eq(siKeywordGroups.type, 'competitor'),
+        eq(siKeywordGroups.isActive, true)
+      )
+    )
+
+  for (const group of competitorGroups) {
+    const [compResult] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(siMentions)
+      .where(
+        and(
+          eq(siMentions.tenantId, tenantId),
+          eq(siMentions.keywordGroupId, group.id),
+          gte(siMentions.collectedAt, oneHourAgo)
+        )
+      )
+    const compCount = Number(compResult?.count ?? 0)
+    if (compCount > 0) {
+      const compPayload = {
+        competitorGroupId: group.id,
+        competitorName: group.name,
+        mentionCount: compCount,
+        platform,
+        message: `${compCount} new mention${compCount > 1 ? 's' : ''} of competitor "${group.name}" on ${platform}`,
+      }
+      const compId = await createAlert(db, tenantId, 'competitor_mention', compPayload)
+      if (compId) await notifyApi(env, tenantId, 'competitor_mention', compId, compPayload)
+    }
+  }
+
   // Crisis alert — check negative sentiment ratio in last 4 hours
   const recentMentions = await db
     .select({ sentiment: siMentions.sentiment })
@@ -113,16 +150,24 @@ async function createAlert(
   // Don't create duplicate alerts within 1 hour
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
 
-  const [existing] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(siAlerts)
-    .where(
-      and(
+  // For competitor_mention, deduplicate per competitor group (not globally)
+  const dedupeWhere = alertType === 'competitor_mention' && payload.competitorGroupId
+    ? and(
+        eq(siAlerts.tenantId, tenantId),
+        eq(siAlerts.alertType, alertType),
+        gte(siAlerts.triggeredAt, oneHourAgo),
+        sql`${siAlerts.payload}->>'competitorGroupId' = ${payload.competitorGroupId as string}`
+      )
+    : and(
         eq(siAlerts.tenantId, tenantId),
         eq(siAlerts.alertType, alertType),
         gte(siAlerts.triggeredAt, oneHourAgo)
       )
-    )
+
+  const [existing] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(siAlerts)
+    .where(dedupeWhere)
 
   if (Number(existing?.count ?? 0) > 0) return null  // Already alerted recently
 
