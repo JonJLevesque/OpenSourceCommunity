@@ -1,13 +1,5 @@
 <div align="center">
 
-```
- _   _  ____
-| | | |/ ___|
-| | | | |
-| |_| | |___
- \___/ \____|
-```
-
 # UltimateCommunity
 
 **The open-source community platform with built-in AI social intelligence — self-host it on Cloudflare in minutes.**
