@@ -6,6 +6,7 @@ import { HackerNewsConnector } from './connectors/hackernews'
 import { LinkedInConnector } from './connectors/linkedin'
 import { YouTubeConnector } from './connectors/youtube'
 import { GitHubConnector } from './connectors/github'
+import { DiscordConnector } from './connectors/discord'
 
 // Map cron schedule to which platforms to poll
 function getPlatformsForCron(cron: string): Platform[] {
@@ -41,6 +42,14 @@ function getConnector(env: Env) {
         return env.GITHUB_TOKEN
           ? new GitHubConnector(env.GITHUB_TOKEN)
           : null
+      case 'discord': {
+        const channelIds = env.DISCORD_CHANNEL_IDS
+          ? env.DISCORD_CHANNEL_IDS.split(',').map(s => s.trim()).filter(Boolean)
+          : []
+        return env.DISCORD_BOT_TOKEN && channelIds.length
+          ? new DiscordConnector(env.DISCORD_BOT_TOKEN, channelIds)
+          : null
+      }
       default:
         // Other connectors — stub for now, implement in Phase 2
         console.log(`[pipeline] Connector for '${platform}' not yet implemented`)

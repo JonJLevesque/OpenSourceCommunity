@@ -28,6 +28,9 @@ OLLAMA_URL=http://localhost:11434
 # LINKEDIN_ORG_URN=urn:li:organization:12345  # Optional: scope monitoring to a specific org
 # YouTube — Google Cloud API key with YouTube Data API v3 enabled
 # YOUTUBE_API_KEY=your-api-key
+# Discord — bot token + comma-separated channel IDs to monitor (no search API; filters locally)
+# DISCORD_BOT_TOKEN=your-bot-token
+# DISCORD_CHANNEL_IDS=123456789,987654321
 
 # Alert callback — URL of the API worker + shared secret
 # Must match INTERNAL_SECRET in apps/api/.dev.vars
