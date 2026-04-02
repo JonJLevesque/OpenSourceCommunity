@@ -23,6 +23,9 @@ OLLAMA_URL=http://localhost:11434
 # REDDIT_CLIENT_ID=your-client-id
 # REDDIT_CLIENT_SECRET=your-client-secret
 # GITHUB_TOKEN=your-token
+# LinkedIn — OAuth2 token with r_organization_social scope (from LinkedIn Developer Portal)
+# LINKEDIN_ACCESS_TOKEN=your-access-token
+# LINKEDIN_ORG_URN=urn:li:organization:12345  # Optional: scope monitoring to a specific org
 
 # Alert callback — URL of the API worker + shared secret
 # Must match INTERNAL_SECRET in apps/api/.dev.vars

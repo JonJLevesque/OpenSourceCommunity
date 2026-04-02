@@ -20,6 +20,8 @@ export interface Env {
   REDDIT_CLIENT_ID?: string
   REDDIT_CLIENT_SECRET?: string
   GITHUB_TOKEN?: string
+  LINKEDIN_ACCESS_TOKEN?: string  // OAuth2 token with r_organization_social scope
+  LINKEDIN_ORG_URN?: string       // e.g. urn:li:organization:12345 (optional)
   // Internal API callback for alert notifications
   API_BASE_URL?: string       // e.g. https://api.opensourcecommunity.io
   INTERNAL_SECRET?: string    // shared secret for /internal/* routes

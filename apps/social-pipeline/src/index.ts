@@ -3,6 +3,7 @@ import { runPipeline } from './pipeline'
 import { TwitterConnector } from './connectors/twitter'
 import { RedditConnector } from './connectors/reddit'
 import { HackerNewsConnector } from './connectors/hackernews'
+import { LinkedInConnector } from './connectors/linkedin'
 
 // Map cron schedule to which platforms to poll
 function getPlatformsForCron(cron: string): Platform[] {
@@ -26,6 +27,10 @@ function getConnector(env: Env) {
         return new RedditConnector()
       case 'hackernews':
         return new HackerNewsConnector()
+      case 'linkedin':
+        return env.LINKEDIN_ACCESS_TOKEN
+          ? new LinkedInConnector(env.LINKEDIN_ACCESS_TOKEN, env.LINKEDIN_ORG_URN)
+          : null
       default:
         // Other connectors — stub for now, implement in Phase 2
         console.log(`[pipeline] Connector for '${platform}' not yet implemented`)
