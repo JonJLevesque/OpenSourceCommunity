@@ -62,8 +62,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // ── Redirect already-authenticated users away from auth pages ─────────────
-  if (user && (pathname === '/login' || pathname === '/signup')) {
+  // ── Redirect already-authenticated users away from auth/marketing pages ────
+  if (user && (pathname === '/' || pathname === '/login' || pathname === '/signup')) {
     return NextResponse.redirect(new URL('/home', request.url))
   }
 
