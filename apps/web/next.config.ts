@@ -14,6 +14,14 @@ const config: NextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8787',
   },
+  // Allow importing .md files as raw strings (bundled at build time — works on Cloudflare Pages edge)
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.md$/,
+      type: 'asset/source',
+    })
+    return config
+  },
 }
 
 export default config

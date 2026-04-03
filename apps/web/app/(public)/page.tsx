@@ -376,10 +376,9 @@ export default function LandingPage() {
 
           {/* Nav links */}
           <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <Link href="#features" className="hover:text-surface-foreground transition-colors">Features</Link>
-            <Link href="#modules" className="hover:text-surface-foreground transition-colors">Modules</Link>
+            <Link href="#modules" className="hover:text-surface-foreground transition-colors">Features</Link>
             <Link href="#open-source" className="hover:text-surface-foreground transition-colors">Open Source</Link>
-            <Link href="#docs" className="hover:text-surface-foreground transition-colors">Docs</Link>
+            <Link href="/docs" className="hover:text-surface-foreground transition-colors">Docs</Link>
           </nav>
 
           {/* CTA buttons */}
@@ -631,7 +630,7 @@ export default function LandingPage() {
       </section>
 
       {/* ━━━ SOCIAL INTELLIGENCE DEEP-DIVE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section id="features" className="bg-neutral-900 text-white py-28 px-6 relative overflow-hidden">
+      <section id="social-intelligence" className="bg-neutral-900 text-white py-28 px-6 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-0" aria-hidden="true">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-orange-500/5 blur-3xl" />
@@ -946,8 +945,8 @@ export default function LandingPage() {
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Developers</h4>
               <ul className="space-y-2.5">
                 <li><Link href="https://github.com/JonJLevesque/OpenSourceCommunity" className="text-sm text-muted-foreground hover:text-surface-foreground transition-colors">GitHub</Link></li>
-                <li><Link href="#docs" className="text-sm text-muted-foreground hover:text-surface-foreground transition-colors">Documentation</Link></li>
-                <li><Link href="https://github.com/JonJLevesque/OpenSourceCommunity/blob/main/CONTRIBUTING.md" className="text-sm text-muted-foreground hover:text-surface-foreground transition-colors">Contributing</Link></li>
+                <li><Link href="/docs" className="text-sm text-muted-foreground hover:text-surface-foreground transition-colors">Documentation</Link></li>
+                <li><Link href="/docs/contributing" className="text-sm text-muted-foreground hover:text-surface-foreground transition-colors">Contributing</Link></li>
                 <li><Link href="https://github.com/JonJLevesque/OpenSourceCommunity/security" className="text-sm text-muted-foreground hover:text-surface-foreground transition-colors">Security</Link></li>
               </ul>
             </div>

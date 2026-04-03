@@ -109,7 +109,7 @@ Once set up, the admin panel lives at `/admin` — it includes settings pages fo
 
 Enable the `nodejs_compat` compatibility flag in Cloudflare Pages under Settings → Functions → Compatibility flags.
 
-Full deployment details: [`/docs/self-hosting.md`](./docs/self-hosting.md) _(if present)_ or open a Discussion for help.
+Full deployment details: [`/docs/self-hosting.md`](./docs/self-hosting.md) or open a Discussion for help.
 
 ---
 
@@ -184,6 +184,22 @@ Fork → branch → PR. All contributions are welcome — bug fixes, new feature
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide including how to add a new module.
 
 This project is built in public — contributions are genuinely welcome.
+
+---
+
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [Self-Hosting Guide](./docs/self-hosting.md) | Deploy on Cloudflare Pages + Workers with Supabase |
+| [Social Pipeline Setup](./docs/social-pipeline.md) | Configure all 11 social connectors |
+| [Technical Architecture](./docs/ENGINEERING.md) | Full system architecture and design decisions |
+| [Product Requirements](./docs/PRD.md) | MVP product requirements document |
+| [Contributing](./CONTRIBUTING.md) | Local setup, project structure, how to add a module |
+| [Security Policy](./SECURITY.md) | Reporting vulnerabilities |
+| [Code of Conduct](./CODE_OF_CONDUCT.md) | Community guidelines |
+
+Browse all docs at [opensourcecommunity.io/docs](https://opensourcecommunity.io/docs)
 
 ---
 
