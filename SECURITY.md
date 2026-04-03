@@ -10,12 +10,7 @@
 
 Please **do not** open a public GitHub issue for security vulnerabilities.
 
-Email **security@opensourcecommunity.io** with:
-- A description of the vulnerability
-- Steps to reproduce
-- Potential impact assessment
-
-We aim to respond within 48 hours and release a patch within 7 days for critical issues. We will credit reporters in the release notes unless you prefer to remain anonymous.
+Email **[Me@Jonlevesque.com](mailto:Me@Jonlevesque.com)** with a description of the vulnerability, steps to reproduce, and potential impact. We will respond promptly and credit reporters in release notes unless you prefer to remain anonymous.
 
 ## Scope
 
