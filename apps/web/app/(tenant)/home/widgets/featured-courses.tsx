@@ -42,7 +42,7 @@ export default async function FeaturedCourses({ token }: { token: string | undef
   let rows: CourseRow[] = []
 
   try {
-    rows = await apiGet<CourseRow[]>('/api/courses', token, 300)
+    rows = (await apiGet<CourseRow[]>('/api/courses', token, 300)) ?? []
   } catch {
     return null
   }

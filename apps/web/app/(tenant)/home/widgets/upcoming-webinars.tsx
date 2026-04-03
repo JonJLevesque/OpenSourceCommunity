@@ -25,7 +25,7 @@ export default async function UpcomingWebinars({ token }: { token: string | unde
   let rows: WebinarRow[] = []
 
   try {
-    rows = await apiGet<WebinarRow[]>('/api/webinars?status=scheduled', token, 0)
+    rows = (await apiGet<WebinarRow[]>('/api/webinars?status=scheduled', token, 0)) ?? []
   } catch {
     return null
   }

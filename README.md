@@ -37,7 +37,7 @@ UltimateCommunity is an open-source, self-hostable community platform with 11 bu
 | **Courses** | Structured learning paths and lessons | ✅ Live |
 | **Webinars** | Live and recorded video sessions | ✅ Live |
 | **Chat** | Real-time channels (Supabase Realtime) | ✅ Live |
-| **Social Intelligence** | AI monitoring across Reddit, Twitter/X, LinkedIn | ✅ Live |
+| **Social Intelligence** | AI monitoring across Reddit, Twitter/X, LinkedIn (admin-only) | ✅ Live |
 | **Members** | Member directory, profiles, roles, leaderboards | ✅ Live |
 | **Notifications** | In-app alerts and email digests | ✅ Live |
 | **Multilingual AI** | AI-powered translation to/from any language | 🗺️ Roadmap |
@@ -94,6 +94,8 @@ The dev command starts all apps in parallel via Turborepo:
 | Supabase Studio | http://localhost:54323 |
 
 Visit `/setup` to create your community and admin account on first run.
+
+Once set up, the admin panel lives at `/admin` — it includes settings pages for all 8 modules (Forums, Ideas, Events, Webinars, Knowledge Base, Courses, Chat, and Social Intelligence). Social Intelligence is restricted to org admins only.
 
 ---
 

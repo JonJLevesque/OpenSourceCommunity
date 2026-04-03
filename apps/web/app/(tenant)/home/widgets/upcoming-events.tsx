@@ -14,11 +14,11 @@ interface EventRow {
     endsAt: string
     timezone: string
     coverImageUrl?: string
-    location: { type: 'virtual' | 'irl'; url?: string; address?: string }
+    location: { type: 'virtual' | 'irl'; url?: string; address?: string } | null
     tags: string[]
     status: string
   }
-  rsvpCount: number
+  rsvpCount: number | string
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ export default async function UpcomingEvents({ token }: { token: string | undefi
   let rows: EventRow[] = []
 
   try {
-    rows = await apiGet<EventRow[]>('/api/events', token, 120)
+    rows = (await apiGet<EventRow[]>('/api/events', token, 120)) ?? []
   } catch {
     return null
   }
@@ -93,17 +93,19 @@ export default async function UpcomingEvents({ token }: { token: string | undefi
                 <div className={`h-full w-full bg-gradient-to-br ${gradientForId(event.id)}`} />
               )}
               {/* Location badge overlay */}
-              <div className="absolute bottom-2 left-2">
-                <Badge
-                  variant={event.location.type === 'virtual' ? 'blue' : 'success'}
-                  className="text-[10px] gap-1"
-                >
-                  {event.location.type === 'virtual'
-                    ? <><Video className="h-2.5 w-2.5" />Virtual</>
-                    : <><MapPin className="h-2.5 w-2.5" />In-Person</>
-                  }
-                </Badge>
-              </div>
+              {event.location && (
+                <div className="absolute bottom-2 left-2">
+                  <Badge
+                    variant={event.location.type === 'virtual' ? 'blue' : 'success'}
+                    className="text-[10px] gap-1"
+                  >
+                    {event.location.type === 'virtual'
+                      ? <><Video className="h-2.5 w-2.5" />Virtual</>
+                      : <><MapPin className="h-2.5 w-2.5" />In-Person</>
+                    }
+                  </Badge>
+                </div>
+              )}
             </div>
 
             {/* Content */}

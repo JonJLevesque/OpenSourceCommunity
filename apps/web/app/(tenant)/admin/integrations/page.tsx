@@ -85,7 +85,7 @@ export default function IntegrationsPage() {
                 type="button"
                 className="w-full rounded-lg border border-border px-3 py-2 text-xs font-semibold text-surface-foreground hover:bg-muted transition-colors"
               >
-                {intg.status === 'enterprise' ? 'Contact sales' : 'Connect'}
+                {intg.status === 'enterprise' ? 'Configure' : 'Connect'}
               </button>
             )}
           </div>

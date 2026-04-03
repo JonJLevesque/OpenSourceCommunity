@@ -143,6 +143,7 @@ export function Sidebar({
       <div className="flex-1 space-y-0.5 overflow-y-auto px-2 py-4">
         {visibleItems.map((item) => {
           if (item.module === 'intelligence') {
+            if (!isAdmin) return null
             const active = isActive('/intelligence')
             return (
               <div key={item.href}>

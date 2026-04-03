@@ -56,6 +56,44 @@ export function registerKbRoutes(app: Hono<HonoEnv>) {
   })
 
   // ---------------------------------------------------------------------------
+  // PATCH /api/kb/categories/:id
+  // ---------------------------------------------------------------------------
+  const updateCategorySchema = createCategorySchema.partial()
+
+  kbRouter.patch('/categories/:id', requireAuth('org_admin'), zValidator('json', updateCategorySchema), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const id = c.req.param('id')
+    const data = c.req.valid('json')
+
+    const [category] = await db
+      .update(kbCategories)
+      .set(data)
+      .where(and(eq(kbCategories.id, id), eq(kbCategories.tenantId, tenantId)))
+      .returning()
+
+    if (!category) return c.json({ error: 'Category not found' }, 404)
+    return c.json({ data: category })
+  })
+
+  // ---------------------------------------------------------------------------
+  // DELETE /api/kb/categories/:id
+  // ---------------------------------------------------------------------------
+  kbRouter.delete('/categories/:id', requireAuth('org_admin'), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const id = c.req.param('id')
+
+    const existing = await db.query.kbCategories.findFirst({
+      where: and(eq(kbCategories.id, id), eq(kbCategories.tenantId, tenantId)),
+    })
+    if (!existing) return c.json({ error: 'Category not found' }, 404)
+
+    await db.delete(kbCategories).where(and(eq(kbCategories.id, id), eq(kbCategories.tenantId, tenantId)))
+    return c.json({ data: { deleted: true } })
+  })
+
+  // ---------------------------------------------------------------------------
   // GET /api/kb/search
   // ---------------------------------------------------------------------------
   kbRouter.get('/search', async (c) => {

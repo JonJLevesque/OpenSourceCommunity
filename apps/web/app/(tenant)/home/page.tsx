@@ -7,6 +7,7 @@ import { resolveWidgets, type HomepageConfig } from './widgets/types'
 // ─── Widget imports ───────────────────────────────────────────────────────────
 
 import WelcomeBar from './widgets/welcome-bar'
+import CategoriesGrid from './widgets/categories-grid'
 import HotDiscussions from './widgets/hot-discussions'
 import TrendingIdeas from './widgets/trending-ideas'
 import UpcomingEvents from './widgets/upcoming-events'
@@ -34,6 +35,7 @@ interface TenantConfig {
 function renderWidget(id: string, token: string | undefined, tenantName: string, enabledModules: string[]) {
   switch (id) {
     case 'welcome':           return <WelcomeBar key={id} token={token} tenantName={tenantName} />
+    case 'categories-grid':  return <CategoriesGrid key={id} enabledModules={enabledModules} />
     case 'hot-discussions':   return <HotDiscussions key={id} token={token} />
     case 'trending-ideas':    return <TrendingIdeas key={id} token={token} />
     case 'upcoming-events':   return <UpcomingEvents key={id} token={token} />
@@ -61,7 +63,8 @@ export default async function CommunityHomePage() {
   }
 
   try {
-    tenantConfig = await apiGet<TenantConfig>('/api/tenant', token, 300)
+    const data = await apiGet<TenantConfig>('/api/tenant', token, 300)
+    if (data) tenantConfig = data
   } catch {
     // fall back to defaults — page still renders
   }

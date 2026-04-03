@@ -19,6 +19,7 @@ export interface HomepageConfig {
 
 export const MODULE_GATE: Record<string, ModuleKey | null> = {
   'welcome':           null,
+  'categories-grid':   null,
   'hot-discussions':   'forums',
   'trending-ideas':    'ideas',
   'upcoming-events':   'events',
@@ -34,15 +35,15 @@ export const MODULE_GATE: Record<string, ModuleKey | null> = {
 
 export const DEFAULT_HOMEPAGE_WIDGETS: WidgetConfig[] = [
   { id: 'welcome',           enabled: true, order: 0,  size: 'lg' },
-  { id: 'hot-discussions',   enabled: true, order: 1,  size: 'md' },
-  { id: 'activity-feed',     enabled: true, order: 2,  size: 'sm' },
-  { id: 'upcoming-events',   enabled: true, order: 3,  size: 'lg' },
-  { id: 'trending-ideas',    enabled: true, order: 4,  size: 'md' },
-  { id: 'member-spotlight',  enabled: true, order: 5,  size: 'sm' },
-  { id: 'recent-articles',   enabled: true, order: 6,  size: 'md' },
-  { id: 'upcoming-webinars', enabled: true, order: 7,  size: 'sm' },
-  { id: 'featured-courses',  enabled: true, order: 8,  size: 'lg' },
-  { id: 'quick-links',       enabled: true, order: 9,  size: 'sm' },
+  { id: 'categories-grid',   enabled: true, order: 1,  size: 'lg' },
+  { id: 'hot-discussions',   enabled: true, order: 2,  size: 'md' },
+  { id: 'member-spotlight',  enabled: true, order: 3,  size: 'sm' },
+  { id: 'upcoming-events',   enabled: true, order: 4,  size: 'lg' },
+  { id: 'trending-ideas',    enabled: true, order: 5,  size: 'md' },
+  { id: 'activity-feed',     enabled: true, order: 6,  size: 'sm' },
+  { id: 'recent-articles',   enabled: true, order: 7,  size: 'md' },
+  { id: 'upcoming-webinars', enabled: true, order: 8,  size: 'md' },
+  { id: 'featured-courses',  enabled: true, order: 9,  size: 'lg' },
 ]
 
 // ─── Resolve widgets for a given tenant ──────────────────────────────────────

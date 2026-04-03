@@ -317,4 +317,74 @@ export function registerForumsRoutes(app: Hono<HonoEnv>) {
   })
 
   app.route('/api/forums', forumsRouter)
+
+  // ─── Admin: forum category CRUD ───────────────────────────────────────────────
+
+  const categoryCreateSchema = z.object({
+    name: z.string().min(1).max(100),
+    slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
+    description: z.string().optional(),
+    visibility: z.enum(['public', 'members', 'restricted']).default('members'),
+    sortOrder: z.number().int().min(0).default(0),
+  })
+
+  const categoryUpdateSchema = categoryCreateSchema.partial()
+
+  const categoryReorderSchema = z.object({
+    order: z.array(z.object({ id: z.string().uuid(), sortOrder: z.number().int().min(0) })),
+  })
+
+  app.post('/api/admin/forums/categories', requireAuth('org_admin'), zValidator('json', categoryCreateSchema), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const data = c.req.valid('json')
+
+    const [cat] = await db.insert(forumCategories).values({ tenantId, ...data }).returning()
+    return c.json({ data: cat }, 201)
+  })
+
+  app.patch('/api/admin/forums/categories/:id', requireAuth('org_admin'), zValidator('json', categoryUpdateSchema), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const id = c.req.param('id')
+    const data = c.req.valid('json')
+
+    const [cat] = await db.update(forumCategories)
+      .set(data)
+      .where(and(eq(forumCategories.id, id), eq(forumCategories.tenantId, tenantId)))
+      .returning()
+
+    if (!cat) return c.json({ error: 'Category not found' }, 404)
+    return c.json({ data: cat })
+  })
+
+  app.delete('/api/admin/forums/categories/:id', requireAuth('org_admin'), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const id = c.req.param('id')
+
+    const [cat] = await db.update(forumCategories)
+      .set({ isArchived: true })
+      .where(and(eq(forumCategories.id, id), eq(forumCategories.tenantId, tenantId)))
+      .returning()
+
+    if (!cat) return c.json({ error: 'Category not found' }, 404)
+    return c.json({ data: { archived: true } })
+  })
+
+  app.patch('/api/admin/forums/categories/reorder', requireAuth('org_admin'), zValidator('json', categoryReorderSchema), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const { order } = c.req.valid('json')
+
+    await Promise.all(
+      order.map(({ id, sortOrder }) =>
+        db.update(forumCategories)
+          .set({ sortOrder })
+          .where(and(eq(forumCategories.id, id), eq(forumCategories.tenantId, tenantId)))
+      )
+    )
+
+    return c.json({ data: { reordered: true } })
+  })
 }

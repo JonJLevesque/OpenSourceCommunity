@@ -37,8 +37,7 @@ export default async function TrendingIdeas({ token }: { token: string | undefin
   let ideas: IdeaRow[] = []
 
   try {
-    const data = await apiGet<{ ideas: IdeaRow[] }>('/api/ideas?sort=trending&limit=5', token, 120)
-    ideas = data.ideas ?? []
+    ideas = (await apiGet<IdeaRow[]>('/api/ideas?sort=trending&limit=5', token, 120)) ?? []
   } catch {
     return null
   }

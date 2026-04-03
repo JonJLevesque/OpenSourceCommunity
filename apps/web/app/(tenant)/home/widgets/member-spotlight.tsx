@@ -20,8 +20,7 @@ export default async function MemberSpotlight({ token }: { token: string | undef
   let members: MemberRow[] = []
 
   try {
-    const data = await apiGet<{ members: MemberRow[]; total: number }>('/api/members?limit=12', token, 120)
-    members = data.members ?? []
+    members = (await apiGet<MemberRow[]>('/api/members?limit=12', token, 120)) ?? []
   } catch {
     return null
   }
@@ -30,7 +29,7 @@ export default async function MemberSpotlight({ token }: { token: string | undef
 
   return (
     <WidgetShell
-      title="Members"
+      title="New Members"
       icon={<Users className="h-4 w-4" />}
       href="/members"
       hrefLabel="View all"

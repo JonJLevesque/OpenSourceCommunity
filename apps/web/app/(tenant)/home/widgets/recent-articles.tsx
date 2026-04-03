@@ -32,8 +32,7 @@ export default async function RecentArticles({ token }: { token: string | undefi
   let articles: ArticleRow[] = []
 
   try {
-    const data = await apiGet<{ articles: ArticleRow[] }>('/api/kb/articles?limit=4', token, 300)
-    articles = data.articles ?? []
+    articles = (await apiGet<ArticleRow[]>('/api/kb/articles?limit=4', token, 300)) ?? []
   } catch {
     return null
   }

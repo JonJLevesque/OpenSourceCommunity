@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { apiGet } from '@/lib/api'
 import type { ModuleKey } from '@/components/layout/sidebar'
@@ -35,12 +36,19 @@ export default async function IntelligenceLayout({
   const token = (await supabase.auth.getSession()).data.session?.access_token
 
   let enabledModules: ModuleKey[] = []
+  let isAdmin = false
   try {
-    const config = await apiGet<TenantConfig>('/api/tenant', token, 300)
-    enabledModules = config.enabledModules
+    const [config, profile] = await Promise.all([
+      apiGet<TenantConfig>('/api/tenant', token, 300),
+      apiGet<{ role: string }>('/api/me', token, 60),
+    ])
+    enabledModules = config?.enabledModules ?? []
+    isAdmin = profile?.role === 'org_admin'
   } catch {
-    // Fall back — assume not enabled, show upgrade prompt
+    // fall back to not enabled / not admin
   }
+
+  if (!isAdmin) redirect('/home')
 
   const isEnabled = enabledModules.includes('intelligence')
 
@@ -62,24 +70,16 @@ export default async function IntelligenceLayout({
             Social Intelligence is not enabled
           </h2>
           <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
-            Upgrade your plan to monitor brand mentions, track sentiment trends, identify top
-            advocates, and get alerts — all in one place.
+            Enable Social Intelligence from the Admin panel to monitor brand mentions, track
+            sentiment trends, identify top advocates, and get alerts.
           </p>
-          <div className="mt-6 flex items-center justify-center gap-3">
+          <div className="mt-6">
             <Link
-              href="/admin/billing"
+              href="/admin"
               className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-colors"
             >
-              Upgrade plan
+              Go to Admin → Modules
             </Link>
-            <a
-              href="https://docs.opensourcecommunity.io/modules/social-intelligence"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
-            >
-              Learn more
-            </a>
           </div>
         </div>
       </div>

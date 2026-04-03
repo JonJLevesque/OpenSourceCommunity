@@ -54,6 +54,40 @@ export function registerChatRoutes(app: Hono<HonoEnv>) {
     return c.json({ data: created }, 201)
   })
 
+  // PATCH /api/chat/channels/:id — update channel (moderators+)
+  const updateChannelSchema = createChannelSchema.partial()
+
+  router.patch('/channels/:id', requireAuth('moderator'), zValidator('json', updateChannelSchema), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const channelId = c.req.param('id')
+    const data = c.req.valid('json')
+
+    const [updated] = await db
+      .update(chatChannels)
+      .set(data)
+      .where(and(eq(chatChannels.id, channelId), eq(chatChannels.tenantId, tenantId)))
+      .returning()
+
+    if (!updated) return c.json({ error: 'Channel not found' }, 404)
+    return c.json({ data: updated })
+  })
+
+  // DELETE /api/chat/channels/:id — delete channel (org_admin only)
+  router.delete('/channels/:id', requireAuth('org_admin'), async (c) => {
+    const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)
+    const tenantId = c.get('tenantId')
+    const channelId = c.req.param('id')
+
+    const existing = await db.query.chatChannels.findFirst({
+      where: and(eq(chatChannels.id, channelId), eq(chatChannels.tenantId, tenantId)),
+    })
+    if (!existing) return c.json({ error: 'Channel not found' }, 404)
+
+    await db.delete(chatChannels).where(and(eq(chatChannels.id, channelId), eq(chatChannels.tenantId, tenantId)))
+    return c.json({ data: { deleted: true } })
+  })
+
   // GET /api/chat/channels/:id
   router.get('/channels/:id', requireAuth(), async (c) => {
     const db = getClient(c.env.DATABASE_URL, c.env.HYPERDRIVE)

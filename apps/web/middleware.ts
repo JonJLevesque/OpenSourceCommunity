@@ -63,7 +63,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // ── Redirect already-authenticated users away from auth/marketing pages ────
-  if (user && (pathname === '/' || pathname === '/login' || pathname === '/signup')) {
+  if (user && (pathname === '/login' || pathname === '/signup')) {
     return NextResponse.redirect(new URL('/home', request.url))
   }
 

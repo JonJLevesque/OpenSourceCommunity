@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MessageSquare } from 'lucide-react'
+import { MessageSquare, Eye } from 'lucide-react'
 import { apiGet } from '@/lib/api'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -10,11 +10,13 @@ import { WidgetShell } from './widget-shell'
 interface ThreadRow {
   id: string
   title: string
-  categorySlug: string
-  categoryName: string
+  body?: string
+  categorySlug?: string
+  categoryName?: string
   authorName: string
   authorAvatarUrl?: string
   replyCount: number
+  viewCount?: number
   createdAt: string
   isAnswered: boolean
 }
@@ -31,14 +33,23 @@ function timeAgo(iso: string): string {
   return `${Math.floor(hrs / 24)}d ago`
 }
 
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+}
+
+function excerpt(body: string | undefined, maxLen = 90): string {
+  if (!body) return ''
+  const text = stripHtml(body)
+  return text.length > maxLen ? `${text.slice(0, maxLen)}…` : text
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default async function HotDiscussions({ token }: { token: string | undefined }) {
   let threads: ThreadRow[] = []
 
   try {
-    const data = await apiGet<{ threads: ThreadRow[] }>('/api/forums/threads?sort=active&limit=5', token, 60)
-    threads = data.threads ?? []
+    threads = (await apiGet<ThreadRow[]>('/api/forums/threads?sort=active&limit=5', token, 60)) ?? []
   } catch {
     return null
   }
@@ -55,47 +66,66 @@ export default async function HotDiscussions({ token }: { token: string | undefi
       contentClassName="p-0"
     >
       <ul className="divide-y divide-border">
-        {threads.map((thread) => (
-          <li key={thread.id}>
-            <Link
-              href={`/forums/${thread.categorySlug}/${thread.id}`}
-              className="group flex items-start gap-4 px-5 py-4 hover:bg-muted transition-colors"
-            >
-              <Avatar
-                src={thread.authorAvatarUrl ?? null}
-                name={thread.authorName}
-                size="sm"
-                className="mt-0.5 flex-shrink-0"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-surface-foreground line-clamp-1 group-hover:text-brand transition-colors">
-                  {thread.title}
-                </p>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="text-[11px] text-muted-foreground">{thread.authorName}</span>
-                  <span className="text-[11px] text-muted-foreground/50">·</span>
-                  <span className="text-[11px] text-muted-foreground">{timeAgo(thread.createdAt)}</span>
-                  {thread.categoryName && (
-                    <>
-                      <span className="text-[11px] text-muted-foreground/50">·</span>
-                      <Badge variant="secondary" className="text-[10px] py-0 px-1.5">
-                        {thread.categoryName}
-                      </Badge>
-                    </>
+        {threads.map((thread) => {
+          const threadExcerpt = excerpt(thread.body)
+          const href = thread.categorySlug
+            ? `/forums/${thread.categorySlug}/${thread.id}`
+            : `/forums/${thread.id}`
+
+          return (
+            <li key={thread.id}>
+              <Link
+                href={href}
+                className="group flex gap-3 px-5 py-4 hover:bg-muted transition-colors"
+              >
+                <Avatar
+                  src={thread.authorAvatarUrl ?? null}
+                  name={thread.authorName}
+                  size="sm"
+                  className="mt-0.5 shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold text-surface-foreground line-clamp-1 group-hover:text-brand transition-colors">
+                      {thread.title}
+                    </p>
+                    {thread.isAnswered && (
+                      <Badge variant="success" className="shrink-0 text-[10px] py-0 px-1.5">✓ Solved</Badge>
+                    )}
+                  </div>
+
+                  {threadExcerpt && (
+                    <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                      {threadExcerpt}
+                    </p>
                   )}
+
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span className="text-[11px] text-muted-foreground">{thread.authorName}</span>
+                    <span className="text-[11px] text-muted-foreground/50">·</span>
+                    <span className="text-[11px] text-muted-foreground">{timeAgo(thread.createdAt)}</span>
+                    {thread.categoryName && (
+                      <>
+                        <span className="text-[11px] text-muted-foreground/50">·</span>
+                        <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{thread.categoryName}</Badge>
+                      </>
+                    )}
+                    <span className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <MessageSquare className="h-2.5 w-2.5" />
+                      {thread.replyCount}
+                    </span>
+                    {(thread.viewCount ?? 0) > 0 && (
+                      <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Eye className="h-2.5 w-2.5" />
+                        {thread.viewCount}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                {thread.isAnswered && (
-                  <Badge variant="success" className="text-[10px] py-0 px-1.5">✓</Badge>
-                )}
-                <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                  {thread.replyCount} {thread.replyCount === 1 ? 'reply' : 'replies'}
-                </span>
-              </div>
-            </Link>
-          </li>
-        ))}
+              </Link>
+            </li>
+          )
+        })}
       </ul>
     </WidgetShell>
   )

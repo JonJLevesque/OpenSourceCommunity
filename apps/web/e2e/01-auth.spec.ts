@@ -73,7 +73,7 @@ test.describe('Auth — authenticated', () => {
     await expect(page.locator('body')).not.toContainText('Application error')
     const body = await page.locator('body').textContent()
     const hasIndicator = await page.locator('[data-testid="user-menu"], header img, header [class*="avatar"], header [class*="profile"]').count() > 0
-    expect(hasIndicator || body?.includes(TEST_EMAIL.split('@')[0])).toBeTruthy()
+    expect(hasIndicator || (body ?? '').includes(TEST_EMAIL.split('@')[0] ?? '')).toBeTruthy()
   })
 
   // Use a fresh login for this test to avoid invalidating the shared session

@@ -51,7 +51,7 @@ export default async function ActivityFeed({ token }: { token: string | undefine
   let activity: ActivityItem[] = []
 
   try {
-    activity = await apiGet<ActivityItem[]>('/api/activity?limit=10', token, 60)
+    activity = (await apiGet<ActivityItem[]>('/api/activity?limit=10', token, 60)) ?? []
   } catch {
     return null
   }
