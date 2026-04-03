@@ -10,6 +10,7 @@ export type ModuleId =
   | 'kb'
   | 'chat'
   | 'social-intel'
+  | 'multilingual-ai'  // Phase 2
   | 'gamification'    // post-MVP
   | 'attribution'     // post-MVP
   | 'ai-moderation'   // post-MVP
@@ -37,6 +38,7 @@ export interface Member {
   customRoleId: string | null
   displayName: string
   avatarUrl: string | null
+  language: string | null
 }
 
 export interface PermissionDefinition {
@@ -81,6 +83,8 @@ export interface HonoEnv {
     EMAIL_FROM?: string         // e.g. 'Community <hello@example.com>'
     EMAIL_DOMAIN?: string       // Mailgun domain
     INTERNAL_SECRET?: string    // Shared secret for /internal/* Worker-to-Worker routes
+    ANTHROPIC_API_KEY?: string  // Claude API key for AI translation fallback
+    GEMINI_API_KEY?: string     // Gemini API key for AI translation (primary)
     AI?: Ai                     // Cloudflare Workers AI binding (optional)
     HYPERDRIVE?: { connectionString: string }  // Cloudflare Hyperdrive binding
   }

@@ -21,6 +21,7 @@ interface MemberProfile {
   displayName: string
   avatarUrl?: string
   role: 'member' | 'moderator' | 'org_admin'
+  language?: string | null
 }
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
@@ -86,6 +87,7 @@ export default async function TenantLayout({
         userName={memberProfile?.displayName}
         userAvatarUrl={memberProfile?.avatarUrl}
         userEmail={user.email}
+        userLanguage={memberProfile?.language ?? null}
         token={token}
       />
 

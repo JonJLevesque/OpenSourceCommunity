@@ -28,8 +28,11 @@ const MODULE_DEFS: Record<string, ModuleDef> = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function CategoriesGrid({ enabledModules }: { enabledModules: string[] }) {
+const ADMIN_ONLY_MODULES = new Set(['social-intel', 'intelligence'])
+
+export default function CategoriesGrid({ enabledModules, isAdmin = false }: { enabledModules: string[]; isAdmin?: boolean }) {
   const categories = enabledModules
+    .filter((m) => isAdmin || !ADMIN_ONLY_MODULES.has(m))
     .map((m) => MODULE_DEFS[m])
     .filter((c): c is ModuleDef => Boolean(c))
 

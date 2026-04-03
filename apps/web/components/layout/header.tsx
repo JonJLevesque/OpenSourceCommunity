@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Search, Bell, LogOut, User, Settings } from 'lucide-react'
+import { Search, Bell, LogOut, User, Settings, Languages, Check } from 'lucide-react'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { createClient } from '@/lib/supabase/client'
-import { apiClientGet } from '@/lib/api-client'
+import { apiClientGet, apiClientPatch } from '@/lib/api-client'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/ui/avatar'
 
@@ -18,9 +18,30 @@ export interface HeaderProps {
   userName?: string | undefined
   userAvatarUrl?: string | undefined
   userEmail?: string | undefined
+  userLanguage?: string | null
   unreadCount?: number
   token?: string | undefined
 }
+
+// ─── Supported languages ──────────────────────────────────────────────────────
+
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'es', label: 'Español' },
+  { code: 'fr', label: 'Français' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'pt', label: 'Português' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+  { code: 'zh', label: '中文' },
+  { code: 'ar', label: 'العربية' },
+  { code: 'nl', label: 'Nederlands' },
+  { code: 'pl', label: 'Polski' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'tr', label: 'Türkçe' },
+  { code: 'sv', label: 'Svenska' },
+]
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -30,6 +51,7 @@ export function Header({
   userName,
   userAvatarUrl,
   userEmail,
+  userLanguage,
   unreadCount = 0,
   token,
 }: HeaderProps) {
@@ -38,6 +60,33 @@ export function Header({
 
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [langMenuOpen, setLangMenuOpen] = useState(false)
+  const [currentLang, setCurrentLang] = useState<string | null>(userLanguage ?? null)
+
+  // Close lang menu on outside click (capture=false so the button toggle fires first)
+  useEffect(() => {
+    if (!langMenuOpen) return
+    function handleClick(e: MouseEvent) {
+      // Ignore clicks on the toggle button itself — it manages its own state
+      const target = e.target as HTMLElement
+      if (target.closest('[data-lang-picker]')) return
+      setLangMenuOpen(false)
+    }
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [langMenuOpen])
+
+  async function handleLanguageChange(code: string) {
+    const newLang = code === 'en' ? null : code
+    setCurrentLang(newLang)
+    setLangMenuOpen(false)
+    try {
+      await apiClientPatch('/api/me', { language: newLang })
+      router.refresh()
+    } catch {
+      // silent — preference still updated locally
+    }
+  }
 
   async function handleSignOut() {
     await supabase.auth.signOut()
@@ -82,6 +131,39 @@ export function Header({
               ⌘K
             </kbd>
           </button>
+
+          {/* Language picker */}
+          <div className="relative" data-lang-picker>
+            <button
+              type="button"
+              onClick={() => setLangMenuOpen((v) => !v)}
+              className="flex items-center gap-1 rounded-lg p-2 text-muted-foreground hover:bg-muted transition-colors"
+              aria-label="Change language"
+            >
+              <Languages className="h-5 w-5" />
+              {currentLang && currentLang !== 'en' && (
+                <span className="hidden sm:inline text-xs font-medium text-brand uppercase">{currentLang}</span>
+              )}
+            </button>
+            {langMenuOpen && (
+              <div className="absolute right-0 top-full mt-1 z-50 w-48 rounded-xl border border-border bg-card shadow-lg py-1">
+                {LANGUAGES.map((lang) => {
+                  const active = lang.code === 'en' ? !currentLang || currentLang === 'en' : currentLang === lang.code
+                  return (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className="flex w-full items-center justify-between px-4 py-2 text-sm text-surface-foreground hover:bg-muted transition-colors"
+                    >
+                      {lang.label}
+                      {active && <Check className="h-3.5 w-3.5 text-brand" />}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
 
           {/* Notifications */}
           <Link

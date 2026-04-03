@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { apiGet } from '@/lib/api'
 import type { Metadata } from 'next'
 import { ThreadActions } from './thread-actions'
+import { TranslatableThread } from './translatable-thread'
 import { Badge } from '@/components/ui/badge'
 import { Avatar } from '@/components/ui/avatar'
 
@@ -105,6 +106,21 @@ function renderBody(body: Record<string, unknown> | string): string {
   }
 }
 
+function extractText(node: Record<string, unknown>): string {
+  if (node.type === 'text') return (node.text as string | undefined) ?? ''
+  const children = (node.content as Record<string, unknown>[] | undefined) ?? []
+  return children.map(extractText).join(' ')
+}
+
+function bodyToPlainText(body: Record<string, unknown> | string): string {
+  try {
+    if (typeof body === 'string') return body
+    return extractText(body).replace(/\s+/g, ' ').trim()
+  } catch {
+    return ''
+  }
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ThreadPage({
@@ -125,7 +141,23 @@ export default async function ThreadPage({
   }
   if (!detail) notFound()
 
+  // Fetch member language preference (non-fatal)
+  let memberLanguage: string | null = null
+  try {
+    const me = await apiGet<{ language?: string | null }>('/api/me', token, 60)
+    memberLanguage = me.language ?? null
+  } catch {
+    // not logged in or fetch failed — no translation
+  }
+
   const { thread, posts } = detail
+
+  const enrichedPosts = posts.map((post) => ({
+    ...post,
+    bodyHtml: renderBody(post.body),
+    bodyText: bodyToPlainText(post.body),
+  }))
+
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
@@ -170,12 +202,16 @@ export default async function ThreadPage({
         </div>
       </div>
 
-      {/* Posts */}
-      <div className="space-y-4">
-        {posts.map((post, index) => (
-          <PostCard key={post.id} post={post} isFirst={index === 0} />
-        ))}
-      </div>
+      {/* Posts — translatable if user has a language preference */}
+      {memberLanguage && memberLanguage !== 'en' ? (
+        <TranslatableThread posts={enrichedPosts} targetLang={memberLanguage} />
+      ) : (
+        <div className="space-y-4">
+          {enrichedPosts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      )}
 
       {/* Reply form */}
       <ThreadActions
@@ -189,15 +225,7 @@ export default async function ThreadPage({
 
 // ─── Post card ────────────────────────────────────────────────────────────────
 
-function PostCard({
-  post,
-  isFirst: _isFirst,
-}: {
-  post: PostObj
-  isFirst: boolean
-}) {
-  const bodyHtml = renderBody(post.body)
-
+function PostCard({ post }: { post: PostObj & { bodyHtml: string } }) {
   return (
     <article
       className={[
@@ -236,10 +264,10 @@ function PostCard({
       </div>
 
       {/* Body */}
-      {bodyHtml && (
+      {post.bodyHtml && (
         <div
           className="prose prose-sm max-w-none prose-headings:text-surface-foreground prose-p:text-surface-foreground prose-strong:text-surface-foreground prose-code:text-brand prose-a:text-brand"
-          dangerouslySetInnerHTML={{ __html: bodyHtml }}
+          dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
         />
       )}
     </article>

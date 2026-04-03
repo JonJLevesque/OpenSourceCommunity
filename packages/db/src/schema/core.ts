@@ -93,6 +93,7 @@ export const members = pgTable(
     username: text('username'),
     avatarUrl: text('avatar_url'),
     bio: text('bio'),
+    language: text('language'),
     createdAt: timestamp('created_at').defaultNow(),
     lastActiveAt: timestamp('last_active_at'),
     socialHandles: jsonb('social_handles').default({}),

@@ -30,12 +30,16 @@ interface TenantConfig {
   settings?: { homepage?: HomepageConfig }
 }
 
+interface MemberProfile {
+  role: 'member' | 'moderator' | 'org_admin'
+}
+
 // ─── Widget renderer ──────────────────────────────────────────────────────────
 
-function renderWidget(id: string, token: string | undefined, tenantName: string, enabledModules: string[]) {
+function renderWidget(id: string, token: string | undefined, tenantName: string, enabledModules: string[], isAdmin: boolean) {
   switch (id) {
     case 'welcome':           return <WelcomeBar key={id} token={token} tenantName={tenantName} />
-    case 'categories-grid':  return <CategoriesGrid key={id} enabledModules={enabledModules} />
+    case 'categories-grid':  return <CategoriesGrid key={id} enabledModules={enabledModules} isAdmin={isAdmin} />
     case 'hot-discussions':   return <HotDiscussions key={id} token={token} />
     case 'trending-ideas':    return <TrendingIdeas key={id} token={token} />
     case 'upcoming-events':   return <UpcomingEvents key={id} token={token} />
@@ -61,10 +65,15 @@ export default async function CommunityHomePage() {
     slug: 'community',
     enabledModules: ['forums', 'ideas'],
   }
+  let isAdmin = false
 
   try {
-    const data = await apiGet<TenantConfig>('/api/tenant', token, 300)
+    const [data, profile] = await Promise.all([
+      apiGet<TenantConfig>('/api/tenant', token, 300),
+      apiGet<MemberProfile>('/api/me', token, 60),
+    ])
     if (data) tenantConfig = data
+    isAdmin = profile?.role === 'org_admin'
   } catch {
     // fall back to defaults — page still renders
   }
@@ -80,7 +89,7 @@ export default async function CommunityHomePage() {
       style={{ gridAutoFlow: 'dense' }}
     >
       {widgets.map((w) =>
-        renderWidget(w.id, token, tenantConfig.name, tenantConfig.enabledModules)
+        renderWidget(w.id, token, tenantConfig.name, tenantConfig.enabledModules, isAdmin)
       )}
     </div>
   )

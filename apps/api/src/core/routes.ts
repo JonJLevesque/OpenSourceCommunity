@@ -4,6 +4,7 @@ import { z } from 'zod'
 import type { HonoEnv } from '@osc/core'
 import { requireAuth } from '../middleware/auth'
 import { getClient } from '@osc/db'
+import { translate } from '../services/translation'
 import { members, tenants, tenantModules, forumThreads, forumPosts, forumCategories, ideas, events, notifications, webhooks, webhookDeliveries, kbArticles, emailPreferences, auditLogs, contentReports } from '@osc/db/schema'
 import { eq, and, ilike, or, count, desc, sql, gte, inArray, isNull } from 'drizzle-orm'
 
@@ -373,6 +374,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
     bio: z.string().max(500).optional(),
     avatarUrl: z.string().url().optional().or(z.literal('')),
     socialHandles: z.record(z.string(), z.string()).optional(),
+    language: z.string().max(10).nullable().optional(),
   })
 
   app.patch('/api/me', requireAuth(), zValidator('json', updateProfileSchema), async (c) => {
@@ -387,6 +389,7 @@ export function coreRoutes(app: Hono<HonoEnv>) {
     if (data.bio !== undefined) updateValues.bio = data.bio || null
     if (data.avatarUrl !== undefined) updateValues.avatarUrl = data.avatarUrl || null
     if (data.socialHandles !== undefined) updateValues.socialHandles = data.socialHandles
+    if (data.language !== undefined) updateValues.language = data.language ?? null
 
     if (Object.keys(updateValues).length === 0) {
       return c.json({ data: member })
@@ -399,6 +402,28 @@ export function coreRoutes(app: Hono<HonoEnv>) {
       .returning()
 
     return c.json({ data: updated })
+  })
+
+  // ─── POST /api/translate ──────────────────────────────────────────────────────
+  // AI translation endpoint — Gemini primary, Claude fallback, Redis cache
+  const translateSchema = z.object({
+    text: z.string().min(1).max(10000),
+    targetLang: z.string().min(2).max(10),
+  })
+
+  app.post('/api/translate', requireAuth(), zValidator('json', translateSchema), async (c) => {
+    const { text, targetLang } = c.req.valid('json')
+
+    const result = await translate({
+      text,
+      targetLang,
+      geminiKey: c.env.GEMINI_API_KEY,
+      anthropicKey: c.env.ANTHROPIC_API_KEY,
+      redisUrl: c.env.UPSTASH_REDIS_REST_URL,
+      redisToken: c.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+
+    return c.json({ data: result })
   })
 
   // ─── GET /api/notifications ───────────────────────────────────────────────────
