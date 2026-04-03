@@ -612,18 +612,13 @@ export default function LandingPage() {
               <p className="text-sm text-muted-foreground leading-relaxed">In-app alerts, email digests, and real-time activity feeds</p>
             </div>
 
-            {/* Multilingual — Coming soon */}
-            <div className="group rounded-2xl border-2 border-violet-300/40 bg-gradient-to-br from-violet-500/8 to-indigo-500/8 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative overflow-hidden">
-              <div className="absolute top-3 right-3 rounded-full bg-violet-500/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-600">
-                Coming soon
-              </div>
-              <div className="h-11 w-11 rounded-xl bg-violet-500/12 flex items-center justify-center mb-4">
+            {/* Multilingual AI — Live */}
+            <div className="group rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+              <div className="h-11 w-11 rounded-xl bg-violet-50 flex items-center justify-center mb-4">
                 <GlobeIcon className="h-5.5 w-5.5 text-violet-600" />
               </div>
               <h3 className="text-base font-semibold text-surface-foreground mb-1.5">Multilingual AI</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                AI translates any content to/from any language on the fly. Post once, reach everyone.
-              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">AI-powered translation via Gemini and Claude. Read any post in your language — with one click.</p>
             </div>
           </div>
         </div>
@@ -790,7 +785,18 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Social Loop */}
+            {/* Phase 2 — Shipped */}
+            <div className="rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-7 shadow-sm">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-3">
+                ✓ Phase 2 — Shipped
+              </div>
+              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Multilingual AI</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Powered by Gemini and Claude. Pick your language in the header — every forum post translates instantly. Redis-cached, one-click &ldquo;View original&rdquo;.
+              </p>
+            </div>
+
+            {/* Phase 3 — Social Loop */}
             <div className="rounded-2xl border border-violet-200 bg-white p-7 shadow-sm">
               <div className="h-11 w-11 rounded-xl bg-violet-50 flex items-center justify-center mb-5">
                 <svg className="h-5 w-5 text-violet-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -807,21 +813,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Multilingual AI */}
-            <div className="rounded-2xl border border-border bg-white p-7 shadow-sm">
-              <div className="h-11 w-11 rounded-xl bg-emerald-50 flex items-center justify-center mb-5">
-                <GlobeIcon className="h-5 w-5 text-emerald-600" />
-              </div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-3">
-                Phase 2
-              </div>
-              <h3 className="text-lg font-semibold text-surface-foreground mb-2">Multilingual AI</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Powered by Gemini and Claude. Post in any language, read in yours. Translation built into every module — forums, chat, knowledge base, and more.
-              </p>
-            </div>
-
-            {/* Fediverse */}
+            {/* Phase 4 — Fediverse */}
             <div className="rounded-2xl border border-border bg-white p-7 shadow-sm">
               <div className="h-11 w-11 rounded-xl bg-indigo-50 flex items-center justify-center mb-5">
                 <svg className="h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -838,7 +830,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Slack Bridge */}
+            {/* Phase 6 — Slack Bridge */}
             <div className="rounded-2xl border border-border bg-white p-7 shadow-sm">
               <div className="h-11 w-11 rounded-xl bg-sky-50 flex items-center justify-center mb-5">
                 <SlackIcon className="h-5 w-5 text-sky-600" />

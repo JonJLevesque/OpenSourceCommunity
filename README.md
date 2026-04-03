@@ -40,7 +40,7 @@ UltimateCommunity is an open-source, self-hostable community platform with 11 bu
 | **Social Intelligence** | AI monitoring across Reddit, Twitter/X, LinkedIn (admin-only) | ✅ Live |
 | **Members** | Member directory, profiles, roles, leaderboards | ✅ Live |
 | **Notifications** | In-app alerts and email digests | ✅ Live |
-| **Multilingual AI** | AI-powered translation to/from any language | 🗺️ Roadmap |
+| **Multilingual AI** | AI-powered translation via Gemini + Claude, language picker in header | ✅ Live |
 
 ---
 
@@ -209,7 +209,7 @@ Full roadmap tracked as [GitHub Issues →](https://github.com/JonJLevesque/Open
 | Phase | Focus | Issues |
 |-------|-------|--------|
 | ✅ **Phase 1** | Social listening — all 11 connectors shipped (Reddit, HackerNews, Twitter/X, LinkedIn, YouTube, GitHub, Discord, TikTok, G2, Trustpilot, Product Hunt) + full intelligence UI | [#1–#8](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-1) |
-| **Phase 2** | Multilingual AI — translate all content on the fly via Gemini / Claude | [#9–#10](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-2) |
+| ✅ **Phase 2** | Multilingual AI — Gemini + Claude translation, language picker, forum thread translate button, Redis caching | [#9–#10](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-2) |
 | **Phase 3** | Social Loop — mentions become community threads, replies flow back to source platforms | [#11–#13](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-3) |
 | **Phase 4** | Fediverse / ActivityPub — federated identities, portable handles, interop with Mastodon/Lemmy | [#14–#17](https://github.com/JonJLevesque/OpenSourceCommunity/issues?q=label%3Aphase-4) |
 | **Phase 5** | Federation Registry — portable usernames, SSO across OSC instances, community directory | [#18](https://github.com/JonJLevesque/OpenSourceCommunity/issues/18) |
