@@ -6,7 +6,6 @@ import { marked } from 'marked'
 import selfHosting from '../../../../../../docs/self-hosting.md'
 import socialPipeline from '../../../../../../docs/social-pipeline.md'
 import architecture from '../../../../../../docs/ENGINEERING.md'
-import prd from '../../../../../../docs/PRD.md'
 import contributing from '../../../../../../CONTRIBUTING.md'
 import security from '../../../../../../SECURITY.md'
 import codeOfConduct from '../../../../../../CODE_OF_CONDUCT.md'
@@ -16,7 +15,6 @@ const DOCS: Record<string, { title: string; category: string; content: string }>
   'social-pipeline': { title: 'Social Pipeline Setup',  category: 'Getting Started', content: socialPipeline },
   'contributing':    { title: 'Contributing',           category: 'Getting Started', content: contributing },
   'architecture':    { title: 'Technical Architecture', category: 'Reference',       content: architecture },
-  'prd':             { title: 'Product Requirements',   category: 'Reference',       content: prd },
   'security':        { title: 'Security Policy',        category: 'Policies',        content: security },
   'code-of-conduct': { title: 'Code of Conduct',       category: 'Policies',        content: codeOfConduct },
 }

@@ -194,7 +194,6 @@ This project is built in public — contributions are genuinely welcome.
 | [Self-Hosting Guide](./docs/self-hosting.md) | Deploy on Cloudflare Pages + Workers with Supabase |
 | [Social Pipeline Setup](./docs/social-pipeline.md) | Configure all 11 social connectors |
 | [Technical Architecture](./docs/ENGINEERING.md) | Full system architecture and design decisions |
-| [Product Requirements](./docs/PRD.md) | MVP product requirements document |
 | [Contributing](./CONTRIBUTING.md) | Local setup, project structure, how to add a module |
 | [Security Policy](./SECURITY.md) | Reporting vulnerabilities |
 | [Code of Conduct](./CODE_OF_CONDUCT.md) | Community guidelines |

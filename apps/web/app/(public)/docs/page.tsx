@@ -35,11 +35,6 @@ const DOCS = [
         title: 'Technical Architecture',
         description: 'Deep dive into the system architecture — monorepo structure, multi-tenancy model, API layer, social listening pipeline, auth, real-time layer, and infrastructure decisions.',
       },
-      {
-        slug: 'prd',
-        title: 'Product Requirements',
-        description: 'The original product requirements document (PRD v1.0) covering target personas, module feature breakdown, information architecture, and success metrics.',
-      },
     ],
   },
   {

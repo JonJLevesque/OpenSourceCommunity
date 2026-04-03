@@ -17,7 +17,6 @@ const NAV = [
     category: 'Reference',
     items: [
       { slug: 'architecture', title: 'Technical Architecture' },
-      { slug: 'prd', title: 'Product Requirements' },
     ],
   },
   {
