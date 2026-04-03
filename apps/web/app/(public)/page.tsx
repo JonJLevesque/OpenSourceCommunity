@@ -591,7 +591,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-base font-semibold text-surface-foreground mb-1.5">Social Intelligence</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                AI-powered mention monitoring, sentiment analysis, advocate identification, and crisis alerting across Reddit, Twitter/X, and LinkedIn
+                AI-powered mention monitoring, sentiment analysis, advocate identification, and crisis alerting across 11 platforms — Reddit, Twitter/X, LinkedIn, YouTube, GitHub, Discord, TikTok, G2, Trustpilot, Product Hunt, and HackerNews
               </p>
             </div>
 
@@ -655,13 +655,13 @@ export default function LandingPage() {
               </h2>
 
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-lg">
-                Social Intelligence monitors Reddit, Twitter/X, LinkedIn, and the broader web for every
+                Social Intelligence monitors 11 platforms — Reddit, Twitter/X, LinkedIn, YouTube, GitHub, Discord, TikTok, G2, Trustpilot, Product Hunt, and HackerNews — for every
                 mention of your community. It surfaces what matters before it becomes a crisis.
               </p>
 
               <div className="mt-8 space-y-4">
                 {[
-                  'Monitor brand mentions across Reddit, Twitter/X, and LinkedIn in real-time',
+                  'Monitor brand mentions across 11 platforms — Reddit, Twitter/X, LinkedIn, YouTube, GitHub, Discord, TikTok, and more',
                   'AI-powered sentiment analysis detects shifts before they trend',
                   'Identify and nurture your top advocates automatically',
                   'Crisis alerting with instant notifications when negativity spikes',
@@ -779,7 +779,18 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {/* Phase 1 — Shipped */}
+            <div className="rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-7 shadow-sm">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-3">
+                ✓ Phase 1 — Shipped
+              </div>
+              <h3 className="text-lg font-semibold text-surface-foreground mb-2">11 Social Connectors</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Full coverage shipped: Reddit, HackerNews, Twitter/X, LinkedIn, YouTube, GitHub, Discord, TikTok, G2, Trustpilot, and Product Hunt — all live.
+              </p>
+            </div>
+
             {/* Social Loop */}
             <div className="rounded-2xl border border-violet-200 bg-white p-7 shadow-sm">
               <div className="h-11 w-11 rounded-xl bg-violet-50 flex items-center justify-center mb-5">
