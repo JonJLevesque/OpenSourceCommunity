@@ -1088,13 +1088,13 @@ describe('tenant isolation', () => {
 
 ## 16. Development Phases
 
-### Phase 1: Foundation (Weeks 1–10)
+### Phase 1: Foundation
 
 **Goal**: Core infrastructure + Forums + Knowledge Base running in production with design partners.
 
 **Work streams**:
 
-*Infrastructure (Weeks 1–3)*
+*Infrastructure*
 - [ ] Turborepo monorepo setup with `pnpm workspaces`
 - [ ] `packages/db`: Drizzle schema for tenants, users, members, tenant_modules
 - [ ] Supabase project setup (supabase CLI); PostgreSQL with RLS policies + test suite for tenant isolation
@@ -1103,7 +1103,7 @@ describe('tenant isolation', () => {
 - [ ] GitHub Actions CI: build, test, lint pipeline
 - [ ] Cloudflare setup: CDN, custom domain routing, Workers AI binding
 
-*Core Platform (Weeks 2–6)*
+*Core Platform*
 - [ ] Hono API server (Cloudflare Workers) with tenant middleware + Supabase JWT validation middleware
 - [ ] Email/password auth + Google/GitHub/LinkedIn social login via Supabase Auth
 - [ ] Session management via `@supabase/ssr` in Next.js; Supabase Auth handles token lifecycle
@@ -1113,13 +1113,13 @@ describe('tenant isolation', () => {
 - [ ] Webhook system (create, configure, delivery + retry)
 - [ ] REST API with OpenAPI spec generation
 
-*Next.js App (Weeks 2–6)*
+*Next.js App*
 - [ ] App Router setup with tenant resolution (subdomain → tenant context)
 - [ ] Auth pages (login, signup, email verification)
 - [ ] Module layout system (sidebar nav, dynamic module loading)
 - [ ] Admin: tenant settings, branding, module enable/disable
 
-*Forums Module (Weeks 4–8)*
+*Forums Module*
 - [ ] Database schema + migrations
 - [ ] Categories, threads, posts CRUD API
 - [ ] Rich text editor (Tiptap) with code blocks, mentions, embeds
@@ -1127,40 +1127,39 @@ describe('tenant isolation', () => {
 - [ ] Reactions, accepted answer, following
 - [ ] Search indexing to OpenSearch
 
-*Knowledge Base Module (Weeks 6–10)*
+*Knowledge Base Module*
 - [ ] Database schema + versioning
 - [ ] Article creation + version history
 - [ ] Category tree management
 - [ ] Full-text search + article feedback
 - [ ] Forum sidebar integration (KB suggestions in threads)
 
-*Beta Launch (Week 10)*
+*Beta Launch*
 - [ ] 10–15 design partners onboarded
 - [ ] Feedback collection process in place
 - [ ] On-call rotation established
 
 ---
 
-### Phase 2: Core Differentiation (Weeks 11–22)
+### Phase 2: Core Differentiation
 
 **Goal**: Ideas module + Events + Social Intelligence MVP + analytics infrastructure.
 
-*Ideas Module (Weeks 11–14)*
+*Ideas Module*
 - [ ] Database schema (ideas, votes, comments, status history)
 - [ ] Voting system (idempotent, one vote per member)
 - [ ] Status workflow + notifications on status change
 - [ ] Merge duplicates, official responses
 - [ ] Sort by vote velocity (trending)
-- [ ] CRM account view (which accounts are requesting what)
 
-*Events Module (Weeks 12–16)*
+*Events Module*
 - [ ] Database schema + RSVP system
 - [ ] Calendar export (.ics, Google Calendar push)
 - [ ] Email reminders (Cloudflare Workers Cron Triggers + Resend)
 - [ ] Recording upload + on-demand playback
 - [ ] Event analytics
 
-*Social Intelligence — MVP (Weeks 13–20)*
+*Social Intelligence — MVP*
 - [ ] `apps/social-pipeline` service scaffolding
 - [ ] `SocialConnector` interface + base class
 - [ ] Twitter/X connector (Elevated API access required)
@@ -1175,13 +1174,13 @@ describe('tenant isolation', () => {
 - [ ] Volume spike alerts
 - [ ] Keyword configuration admin
 
-*Analytics Infrastructure (Weeks 16–20)*
+*Analytics Infrastructure*
 - [ ] ClickHouse setup + community_events schema
 - [ ] Event instrumentation (community actions → ClickHouse)
 - [ ] Per-module analytics dashboards in Admin
 - [ ] social_mention_hourly materialized views
 
-*SAML/OIDC SSO (Weeks 19–22)*
+*SAML/OIDC SSO*
 - [ ] Enable Supabase Auth Enterprise tier (SAML 2.0 + OIDC built-in)
 - [ ] Per-tenant IdP configuration UI (map tenant → Supabase SSO provider)
 - [ ] JIT provisioning (Supabase Auth handles first-login member creation)
@@ -1190,18 +1189,18 @@ describe('tenant isolation', () => {
 
 ---
 
-### Phase 3: Enterprise Readiness + Full Suite (Weeks 23–34)
+### Phase 3: Full Suite
 
-**Goal**: Full module suite, enterprise-grade CRM integration, all 12 social platforms.
+**Goal**: Full module suite, all social platforms.
 
-*Courses Module (Weeks 23–28)*
+*Courses Module*
 - [ ] Course + lesson creation (video embed, quizzes)
 - [ ] Learning paths (ordered course sequences)
 - [ ] Enrollment + progress tracking
 - [ ] Certificate generation (PDF via React PDF)
 - [ ] Course analytics
 
-*Webinars Module (Weeks 26–30)*
+*Webinars Module*
 - [ ] Webinar creation + Zoom Webinar / YouTube Live integration
 - [ ] Registration + calendar integration
 - [ ] Live Q&A (WebSocket)
@@ -1209,26 +1208,18 @@ describe('tenant isolation', () => {
 - [ ] Recording + on-demand with Q&A transcript
 - [ ] Webinar analytics
 
-*CRM Integration (Weeks 25–32)*
-- [ ] Salesforce bidirectional sync (Outbound Messages + REST API)
-- [ ] HubSpot unidirectional sync (community activity → HubSpot contacts)
-- [ ] Field mapping configuration UI
-- [ ] CRM account view in Ideas module (which accounts voted for what)
-- [ ] Salesforce Community Activity sidebar component (Apex LWC)
-
-*Social Intelligence — Full (Weeks 27–34)*
-- [ ] Remaining platform connectors: YouTube, TikTok, Discord, G2, Trustpilot, Product Hunt (7 platforms)
+*Social Intelligence — Full*
+- [ ] Remaining platform connectors: YouTube, TikTok, Discord, G2, Trustpilot, Product Hunt
 - [ ] Competitor monitoring + share-of-voice UI
 - [ ] Advocate identification algorithm + profile cards
-- [ ] Advocate action panel (invite, CRM push, assign)
+- [ ] Advocate action panel (invite, assign)
 - [ ] Crisis alert (negative sentiment threshold)
 - [ ] Unified member profiles (community + social activity)
 - [ ] One-click content creation from mentions
 
-*Custom Domains + White-Label (Weeks 30–34)*
+*Custom Domains + White-Label*
 - [ ] Custom domain provisioning via Cloudflare API
 - [ ] Automatic TLS certificate issuance
-- [ ] White-label branding (remove OpenSourceCommunity branding for Growth+ tenants)
 - [ ] Audit logging (all admin actions to immutable log)
 
 ---
