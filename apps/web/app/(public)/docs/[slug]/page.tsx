@@ -65,6 +65,11 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
           prose-pre:bg-neutral-900
           prose-pre:border
           prose-pre:border-border
+          prose-pre:text-gray-200
+          [&_pre_code]:bg-transparent
+          [&_pre_code]:p-0
+          [&_pre_code]:text-current
+          [&_pre_code]:rounded-none
           prose-a:text-brand
           prose-a:no-underline
           prose-a:hover:underline
